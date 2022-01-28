@@ -1,0 +1,1 @@
+here is all the HTML part and more in general the layout structure and view
