@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 ?>
 <!DOCTYPE html>
@@ -9,15 +9,18 @@
 	<title>my blog</title>
 	<link rel="stylesheet" type="text/css" href="view/blog.css">
 </head>
-<header>
+<?php 
 
-</header>
+require 'header.php';
+
+?>
 <body>
 	<main>
 		<h1>welcome</h1>
 	</main>
 </body>
-<footer>
-	
-</footer>
-</html>
+<?php 
+
+require 'footer.php';
+
+?>
