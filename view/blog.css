@@ -2,8 +2,60 @@
 
 :root{
 	--genfont:'Overpass', sans-serif; 
+	--black: black;
+	--white: white;
 }
 
 * {
 	font-family: var(--genfont);
 }
+
+main {
+	display: flex;
+	justify-items: center;
+	flex-direction: column;
+	text-align: center;
+}
+
+header {
+	display: flex;
+	justify-content: space-between;
+}
+
+
+#top_btns{
+display: flex;
+}
+
+#menuwrapper {
+	position: absolute;
+}
+#menu {
+	padding: 1em;
+	border:solid 1px dimgrey;
+	position: relative;
+}
+
+#sub {
+	padding: 1em;
+	display: none;
+	background-color: var(--black);
+	color:var(--white);
+}
+
+#menu:hover #sub{
+	display: block;
+	padding: 1.3em;
+	transition: 1s;
+}
+
+/* main art view */
+
+#main_article_view{
+	padding: 5px;
+}
+
+#main_article_view td{
+	border: solid 1px var(--black);
+}
+
