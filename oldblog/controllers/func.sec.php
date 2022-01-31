@@ -4,8 +4,7 @@ $_GET   = filter_input_array(INPUT_GET, FILTER_SANITIZE_STRING);
 $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
 
-private function secure1 {
-	protected $x;
+function secure1 ($x){
 		if(ctype_alpha($x)){
 			$x=mysqli_real_escape_string(htmlspecialchars(trim($x)));
 			return $x;

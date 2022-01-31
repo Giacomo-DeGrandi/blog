@@ -1,14 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>my blog</title>
-	<link rel="stylesheet" type="text/css" href="view/blog.css">
-</head>
 <?php 
 
-require './view/header.view.php';
+include '/controllers/controllers.php';
+
+
+require_once './main_header.index.php';
 
 ?>
 <body>
@@ -44,6 +39,6 @@ require_once './view/article.view.php';
 </body>
 <?php 
 
-require './view/footer.view.php';
+require './view/footers/footer.view.php';
 
 ?>

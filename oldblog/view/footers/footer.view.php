@@ -1,5 +1,7 @@
 <?php 
 
+ob_start();
+
 ?>
 <br><br>
 <footer> 
@@ -8,4 +10,4 @@
 </html>
 <?php 
 
-?>
+$footer=ob_get_contents();
