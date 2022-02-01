@@ -2,7 +2,12 @@
 
 session_start();
 
-include 'controllers/controllers.php';
+
+include 'controller/controller.php';
+
+// connnect to db
+
+$conn=connectDb($conn);
 
 // assembly header_______
 
@@ -12,9 +17,9 @@ $user=newVisitor();	// create cookie visitor
 
 $sess=testSessionForm($user);	//test session to view header based on user cookie
 
-getRightHeader($sess);	// get the right header for its role and show the header
+$buttons=getRightHeader($sess);	// get the right header buttons for its role and generate buttons for header
 
-echo '</div></header><br><br><br>';	// close header
+require_once 'view/headerView.php';
 
 // if post on button, route the request to the right assembly page
 
@@ -25,9 +30,8 @@ if(isset($_POST['headerbtn'])){
 
 // assembly body and main___________
 
-$content=getRightPageContent($_COOKIE['page']);	// get the right page from cookie
+$content=getRightContent($_COOKIE['page'],$conn);
 
-include 'view/footers/footer.view.php';
+include 'view/footerView.php';
 
-require_once('main_view.php');
-
+require_once 'template.php';

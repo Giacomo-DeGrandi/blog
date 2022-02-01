@@ -1,24 +1,40 @@
 <?php 
 
+// take my classes form models
+
+require_once 'model/model.php';
+
+// my config for dbs
+
+require_once './config/config.php';
+
+//connect to db
+
+$db= new myDb($server,$username,$password,$database);
+$conn=$db->getConn();
+
+function connectDb ($conn){
+	return $conn;
+}
+
+
 //main controllers		___index.php page________
 
-function getRightPageContent($page){
-			switch($page){
-				case 'home';
-						require'./view/article.index.view.php';
-						return $content;
-				case 'inscription':
-						break;
-				case 'connexion':
-						break;
-				case 'create':
-						break;
-				case 'account':	
-						break;
-				case 'admin':	
-						break;
-		}
+function getRightContent($cookie,$conn){
+	switch($cookie){
+		case 'home':
+			$article=new article($conn);	//instantiate new article
+			$article=$article->getAllarticles();	// get all from class
+			require_once 'view/homeView.php';	// generate articles view
+			return $content;
+		case 'subscribe':
+		case 'login':
+		case 'account':
+		case 'articles':
+		case 'create':
+		case 'admin':
 
+	}
 }
 
 //safety controllers_____
@@ -39,7 +55,7 @@ function newVisitor() {	// create cookie test
 	}
 }
 
-function testSessionForm ($user){	// test if user is connected through sessions--
+function testSessionForm ($user){	// test if user is connected through cookies
 		switch($user){
 			case 'visitor';
 					return 0;
@@ -52,29 +68,39 @@ function testSessionForm ($user){	// test if user is connected through sessions-
 		}
 }
 
-// require different views
+// generate header buttons
+
+function genHeadBtn($x) {
+	$input= '<form method="post" class="headerbtn"><input type="submit" name="headerbtn" value="'.$x.'"></input></form>';
+	return $input;
+}
 
 
 function getRightHeader($sess){		// test to send header--
 	switch($sess){
 		case 0:
-			require_once './view/headers/header.menu.btn.php';
-			require_once './view/headers/buttons/header.sublog.btn.php';
-			break;
+			$sub='subscribe';
+			$log='login';
+			$buttons=genHeadBtn($log).genHeadBtn($sub);
+			return $buttons;
 		case 1:
-			require_once './view/headers/header.menu.btn.php';
-			require_once './view/headers/buttons/header.accountdisc.btn.php';
-			break;
+			$account='account';
+			$disconnect='disconnect';
+			$buttons=genHeadBtn($account).genHeadBtn($disconnect);
+			return $buttons;
 		case 42:
-			require_once './view/headers/header.menu.btn.php';
-			require_once './view/headers/buttons/header.accountdisc.btn.php';
-			require_once './view/headers/buttons/header.create.btn.php';
-			break;
+			$account='account';
+			$disconnect='disconnect';
+			$create='create';
+			$buttons=genHeadBtn($account).genHeadBtn($create).genHeadBtn($disconnect);
+			return $buttons;
 		case 1337:
-			require_once './view/headers/header.menu.btn.php';
-			require_once './view/headers/buttons/header.sublog.btn.php';
-			require_once './view/headers/buttons/header.createadmin.btn.php';
-			break;
+			$account='account';
+			$disconnect='disconnect';
+			$create='create';
+			$admin='admin';
+			$buttons=genHeadBtn($account).genHeadBtn($create).genHeadBtn($admin).genHeadBtn($disconnect);
+			return $buttons;
 	}
 }
 
@@ -127,16 +153,12 @@ function numToTextCategories($id_categories){		//get just the beginning of the a
 	}
 }
 
+
 function viewArticles($article){
-
-		echo '<h2>latest articles</h2><table id="main_article_view"><tr>';
 		for($i=0;$i<3;$i++){
-
-		echo '<td><h2>'.$article[$i]['login'].'</h2>';
+		echo '<tr><td><h2>'.$article[$i]['login'].'</h2>';
 		echo '<h4><i>'.numToTextCategories($article[$i]['id_categorie']).'</i></h4>';
 		echo '<h5>'.textBeginning($article[$i]['article']).'<h5><small><i>continue to read</i></small></td>';
-		echo '</tr></table>';
 	}
-
 }
 

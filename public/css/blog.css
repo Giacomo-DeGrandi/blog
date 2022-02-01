@@ -10,16 +10,17 @@
 	font-family: var(--genfont);
 }
 
+
+header {
+	display: flex;
+	justify-content: space-between;
+}
+
 main {
 	display: flex;
 	justify-items: center;
 	flex-direction: column;
 	text-align: center;
-}
-
-header {
-	display: flex;
-	justify-content: space-between;
 }
 
 

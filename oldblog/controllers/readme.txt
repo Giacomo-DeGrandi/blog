@@ -1,1 +1,0 @@
-here receive requests and contact other files to exchange with them

@@ -1,8 +1,5 @@
 <?php
 
-// my config for dbs
-
-require_once 'dblist.php';
 
 // database model________class to work with 2 dbs
 class myDb{
@@ -33,7 +30,8 @@ class myDb{
 }
 
 
-// user model ___________
+// user subscibed model ___________
+
 class user {
 
 	private $id,$password,$conn;
@@ -63,7 +61,6 @@ class user {
 
 
 // class article ____________
-require_once './models/model.db.php';
 
 class article {
 
