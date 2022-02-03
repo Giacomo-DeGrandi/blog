@@ -2,9 +2,9 @@
 
 session_start();
 
-
 include 'config/config.php';
 
+require_once 'function.php';
 require_once 'model.php';
 
 $mydb=new myDb($server,$username,$password,$database);
@@ -20,12 +20,12 @@ $mydb->getConn();
 	<link rel="stylesheet" type="text/css" href="blog.css">
 </head>
 <header>
-<?php	require_once 'header.php';
+<?php	
 
-	if(!$_SESSION['user']){
-		
-	}
-	
+if(!isset($_SESSION['user'])){
+	echo $vis_header;
+}
+
 ?>
 </header>
 <body>
