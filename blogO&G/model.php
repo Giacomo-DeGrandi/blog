@@ -18,7 +18,6 @@ class myDb{
 	}
 
 	function selectQuery($sql,$values){
-
 		$conn=$this->conn;
 		$query = $sql;
         $prepared = $conn->prepare($query);
@@ -83,6 +82,7 @@ class article {
 	}
 
 }
+
 
 //class categories __________
 class categories {

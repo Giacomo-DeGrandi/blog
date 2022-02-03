@@ -20,15 +20,21 @@ function connectDb ($conn){
 
 //main controllers		___index.php page________
 
-function getRightContent($cookie,$conn){
-	switch($cookie){
-		case 'home':
+function getRightContent($getaction,$conn){
+	switch($getaction){
+		case null:
 			$article=new article($conn);	//instantiate new article
 			$article=$article->getAllarticles();	// get all from class
 			require_once 'view/homeView.php';	// generate articles view
 			return $content;
 		case 'subscribe':
+			$form=postToForm($getaction);
+			require_once 'view/formView.php';	// generate form view
+			return $content;
 		case 'login':
+			$form=postToForm($getaction);
+			require_once 'view/formView.php';	// generate form view
+			return $content;			
 		case 'account':
 		case 'articles':
 		case 'create':
@@ -37,9 +43,47 @@ function getRightContent($cookie,$conn){
 	}
 }
 
+
 //safety controllers_____
 
 include 'func.sec.php';
+
+function testForm($test){
+	if(!empty($test)){
+		if(ctype_alpha($test)){
+			return $test;
+		} else { 
+			echo 'invalid input';
+		}
+	}
+}
+
+//my very easy post controller____
+
+function redirectPostForms($post){
+	if($post){
+
+		foreach ($post as $k => $v) {
+			switch ($k){
+				case 'login':
+					$login=$v;
+					$login=testForm($login);
+					break;
+				case 'password':
+					$password=htmlspecialchars($v);
+					break;
+				case 'passwordconf':
+					$passwordconf=htmlspecialchars($v);
+					break;
+				case 'email':
+					$email=filter_var($v, FILTER_VALIDATE_EMAIL);
+				case 'subscribe':
+					echo $login.$passwordconf.$password;
+					
+			}
+		}
+	}
+}
 
 
 // header controller 	_____main_header.index.php page___
@@ -50,7 +94,6 @@ function newVisitor() {	// create cookie test
 		$user='visitor';
 		$page='home';
 		setcookie('user',$user, time() +36000);
-		setcookie('page',$page, time() +36000);
 		return $user;
 	}
 }
@@ -71,8 +114,8 @@ function testSessionForm ($user){	// test if user is connected through cookies
 // generate header buttons
 
 function genHeadBtn($x) {
-	$input= '<form method="post" class="headerbtn"><input type="submit" name="headerbtn" value="'.$x.'"></input></form>';
-	return $input;
+	$alink= '<a href="?action='.$x.'" >'.$x.'</a>&#160;';
+	return $alink;
 }
 
 
@@ -104,33 +147,53 @@ function getRightHeader($sess){		// test to send header--
 	}
 }
 
-// get post on buttons to choices
 
-function choseFormCookie($formcookiechoice) {
-	switch($formcookiechoice){
+// if post on button, route the request to the right assembly page
+
+function postToForm ($getaction){
+		switch($getaction){
+			case 'subscribe':
+				$form=assembleForm($getaction);
+				return $form;
+			case 'login':
+				$form=assembleForm($getaction);
+				return $form;
+			}
+}
+
+function genForm($t,$n) {
+	$input= '<input type="'.$t.'" name="'.$n.'" placeholder="'.$n.'"></input><br><br>';
+	return $input;
+}
+
+
+function assembleForm($getaction){
+	switch ($getaction){
 		case 'subscribe':
-				return 1;
+			$t='text'; $n='login';
+			$t2='password';$n2='password';
+			$n3='passwordconf';
+			$n4='firstname';
+			$n5='email';
+			$in1=genForm($t,$n);
+			$in2=genForm($t,$n4);
+			$in3=genForm($t,$n5);
+			$in4=genForm($t2,$n2);	
+			$in5=genForm($t2,$n3);
+			$form=$in1.$in2.$in3.$in4.$in5.'<input type="submit" name="subscribe" value="subscribe" width="35px">';
+			return $form;
 		case 'login':
-				return 2;
-		case 'create':
-				return 3;
-		case 'admin':
-				return 4;
+			$t='text'; $n='email';
+			$t2='password';$n2='password';
+			$in1=genForm($t,$n);
+			$in2=genForm($t2,$n2);
+			$form=$in1.$in2.'<input type="submit" name="send1" value="login" width="35px">';
+			return $form;
 	}
 }
 
-function redirectToForm ($cookie){
-		switch($cookie){
-			case 1:
-				setcookie('forms','sub' ,time() +3600);
-				header('location: ./view/forms/main_forms.index.php');
-				break;
-			case 2:
-				setcookie('forms','log' ,time() +3600);
-				header('location: ./view/forms/main_forms.index.php');
-				break;
-			}
-}
+
+
 
 // article controller
 

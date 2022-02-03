@@ -13,7 +13,7 @@ ob_start();
 	<br>
 	<div id="menuwrapper">
 		<div id="menu">
-			<p>menu</p>
+			<a href="index.php">menu</a>
 			<div id="sub">
 				<p>science</p>
 				<p>music</p>

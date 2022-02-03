@@ -21,17 +21,15 @@ $buttons=getRightHeader($sess);	// get the right header buttons for its role and
 
 require_once 'view/headerView.php';
 
-// if post on button, route the request to the right assembly page
+//redirect post request from forms__ 
 
-if(isset($_POST['headerbtn'])){
-	$cookie=choseFormCookie($_POST['headerbtn']);
-	redirectToForm ($cookie);
-}
+redirectPostForms($_POST);
 
 // assembly body and main___________
 
-$content=getRightContent($_COOKIE['page'],$conn);
+$content=getRightContent($_GET['action'],$conn);
 
 include 'view/footerView.php';
 
 require_once 'template.php';
+
