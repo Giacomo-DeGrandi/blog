@@ -48,14 +48,6 @@ class user {
 
 	public function subscribeUser($pdo,$login,$password,$email,$id_droits){
 		$this->pdo=$pdo;
-		$this->login=$login;
-		$this->password=$password;
-		$this->email=$email;
-		$this->id_droits=$id_droits;
-		$login=$this->login;
-		$password=$this->password;
-		$email=$this->email;
-		$id_droits=$this->id_droits;
 		$check= " SELECT * FROM utilisateurs WHERE login=:login OR email=:email ";
 		$prepared = $pdo->prepare($check);
         $executed = $prepared->execute([':login'=> $login,':email'=> $email]);
