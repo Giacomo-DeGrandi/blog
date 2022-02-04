@@ -20,17 +20,36 @@ $conn=$mydb->getConn();
 	<link rel="stylesheet" type="text/css" href="public/css/blog.css">
 </head>
 <header>
-<?php	
+<?php 
+
+require_once 'menu.php';
+
+echo $menu;
 
 if(!isset($_SESSION['user'])){
 	$sess=null;
 	echo rightHeader($sess);
 } else {
-	rightHeader($sess);
+	echo rightHeader($sess);
+}
+
+if(true){
+	switch($_POST):
+		case isset($_POST['subscribe']):
+			setcookie('form','subscribe', time() +3600);
+				header('location: inscription.php');
+				exit();
+				break;
+		case isset($_POST['login']):
+			setcookie('form','login', time() +3600);
+			header('location: inscription.php');
+				exit();
+				break;
+	endswitch;
 }
 
 ?>
-</header>
+</header><br><br><br>
 <body>
 	<main>
 <?php

@@ -10,11 +10,13 @@ class myDb{
 	function __construct($server,$username,$password,$database){
 			$dsn = "mysql:host=$server;dbname=$database;charset=UTF8";
 			$conn = new PDO($dsn, $username, $password);
-			return $this->conn=$conn;
+			$this->conn=$conn;
+			return $conn;
 	}
 
 	public function getConn(){
 		$conn=$this->conn;
+		//var_dump($conn);
 		return $conn;	
 	}
 
@@ -33,30 +35,41 @@ class myDb{
 // user subscibed model ___________
 
 class user {
-
-	private $id,$password,$conn;
+				
+	private $password;
 	public $login,$email,$id_droits; 
 
-	function __construct(){
-		$id=$this->id;
+	function __construct($login,$password,$email,$id_droits){
+		$this->login=$login;
+		$this->password=$password;
+		$this->email=$email;
+		$this->id_droits=$id_droits;
 		$login=$this->login;
 		$password=$this->password;
 		$email=$this->email;
-		$firstname=$this->firstname;
 		$id_droits=$this->id_droits;
 	}
 
 	//subscribe_
 
-	protected function subscribeUser($login,$password,$email,$firstname,$id_droits){
-		
-		$conn=$this->conn;
-		$sql = " INSERT INTO utilisateurs(login,password,email,firstname,id_droits) VALUES (:login,:password,:email,:firstname,:id_droits) ";
-        $prepared = $conn->prepare($sql);
-        $executed = $prepared->execute([':login'=> $login ,':password'=> $password,':email'=> $email,':firstname'=> $firstname,':id_droits'=> $id_droits]);
-        echo 'succesfully subscribed';
+	public function subscribeUser($pdo){
+		$login=$this->login;
+		$password=$this->password;
+		$email=$this->email;
+		$id_droits=$this->id_droits;
+		$check= " SELECT * FROM utilisateurs WHERE login=:login OR email=:email ";
+		$prepared = $pdo->prepare($check);
+        $executed = $prepared->execute([':login'=> $login,':email'=> $email]);
+        $row = $prepared->fetch(PDO::FETCH_ASSOC);
+        if(!empty($row)){
+        	return false;
+        } else {
+		$sql = " INSERT INTO utilisateurs(login,password,email,id_droits) VALUES (:login,:password,:email,:id_droits) ";
+        $prepared2 = $pdo->prepare($sql);
+        $executed = $prepared2->execute([':login'=> $login ,':password'=> $password,':email'=> $email,':id_droits'=> $id_droits]);
+        $this->pdo=$pdo;
+        }
 	}
-
 }
 
 

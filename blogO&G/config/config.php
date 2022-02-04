@@ -5,3 +5,4 @@ $server = "localhost";
 $username = "root";
 $password = "";
 $database = "blog";
+
