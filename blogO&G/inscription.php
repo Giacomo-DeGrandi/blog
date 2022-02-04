@@ -18,6 +18,9 @@ require_once 'menu.php';
 
 require_once 'function.php';
 require_once 'model.php';
+require_once 'config/config.php';
+$mydb=new myDb($server,$username,$password,$database);
+$pdo=$mydb->getConn();
 
 echo $menu;
 
@@ -32,7 +35,6 @@ if(!isset($_SESSION['user'])){
 </header><br><br><br>
 <body>
 	<main>
-		<h1><? if(isset($_COOKIE['form']){echo $_COOKIE['form'];} ?></h1>
 <?php 
 
 
@@ -62,6 +64,8 @@ if(isset($_COOKIE['form'])){
 	echo rightForm($_COOKIE['form']);
 }
 
+$user=new user($pdo); 	// get my user class
+
 if( testPost(isset($_POST['username']))&&
 	testPost(isset($_POST['password']))&&
 	isset($_POST['email'])&&
@@ -69,27 +73,36 @@ if( testPost(isset($_POST['username']))&&
 	testPost(isset($_POST['passwordconf']))&&
 	testPost($_POST['password'])===testPost($_POST['passwordconf'])&&
 	(isset($_POST['send'])) ){
-			include 'config/config.php';
-			$mydb=new myDb($server,$username,$password,$database);
-			$pdo=$mydb->getConn();
 			$login=$_POST['username'];
 			$password=$_POST['password'];
 			$email=$_POST['email'];
 			$id_droits=1; //int cause in bd int id
-			$user= new user($login,$password,$email,$id_droits);
-			$user=$user->subscribeUser($pdo);
+			$user=$user->subscribeUser($pdo,$login,$password,$email,$id_droits);
 		if($user===false){
-			echo 'This user already exists. Please, log in to get access to your account';
+			echo 'This user already exists.<br>Please, choose another username or log in <br> to get access to your account';
 		} else {
 			echo 'Thanks! You\'re subscription is complete, you\'ll be redirected to the login page.';
 			setcookie('form', null, -1, '/');
 			setcookie('form','login', time() +3600);
-			header( "refresh:3;url=inscription.php" );
+			header( "refresh:2;url=inscription.php" );
 		}
 } else {
 	echo '<span>Please fill in all the fields</span>';
 }
-
+if(isset($_POST['connect'])||isset($_POST['password_conn'])){ 
+	if( testPost(isset($_POST['connect']))&&
+		testPost(isset($_POST['password_conn']))){
+				$login=$_POST['connect'];
+				$password=$_POST['password_conn'];
+				$row=$user->connect($login,$password,$user);
+				if(!empty($row)){
+					echo 'Hi &#160;'.'<b>'.$login.'</b>'.'&#160; you\'re now connected. ';
+					header('location: profil.php');
+				} else {
+					echo '<span>Incorrect username or password</span>';
+				}
+	}
+}
 
 ?>
 	</main>

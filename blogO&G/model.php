@@ -39,20 +39,19 @@ class user {
 	private $password;
 	public $login,$email,$id_droits; 
 
-	function __construct($login,$password,$email,$id_droits){
-		$this->login=$login;
-		$this->password=$password;
-		$this->email=$email;
-		$this->id_droits=$id_droits;
-		$login=$this->login;
-		$password=$this->password;
-		$email=$this->email;
-		$id_droits=$this->id_droits;
+	function __construct($pdo){
+		$this->pdo=$pdo;
+		return $pdo;
 	}
 
 	//subscribe_
 
-	public function subscribeUser($pdo){
+	public function subscribeUser($pdo,$login,$password,$email,$id_droits){
+		$this->pdo=$pdo;
+		$this->login=$login;
+		$this->password=$password;
+		$this->email=$email;
+		$this->id_droits=$id_droits;
 		$login=$this->login;
 		$password=$this->password;
 		$email=$this->email;
@@ -67,8 +66,19 @@ class user {
 		$sql = " INSERT INTO utilisateurs(login,password,email,id_droits) VALUES (:login,:password,:email,:id_droits) ";
         $prepared2 = $pdo->prepare($sql);
         $executed = $prepared2->execute([':login'=> $login ,':password'=> $password,':email'=> $email,':id_droits'=> $id_droits]);
-        $this->pdo=$pdo;
         }
+	}
+
+	public function connect($login,$password){
+		$this->login=$login;
+		$this->password=$password;
+		$pdo=$this->pdo;
+		$login=$this->login;
+		setcookie('connected', $login, time() +3600);
+		$prepared = $pdo->prepare("SELECT * FROM utilisateurs WHERE login = :login AND password = :password");
+		$prepared->execute(['login' => $login,':password'=> $password]); 
+		$row = $prepared->fetch();
+		return $row;
 	}
 }
 
