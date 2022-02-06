@@ -32,7 +32,7 @@ class myDb{
 }
 
 
-// user subscibed model ___________
+// user subscribed model ___________
 
 class user {
 				
@@ -46,8 +46,8 @@ class user {
 
 	//subscribe_
 
-	public function subscribeUser($pdo,$login,$password,$email,$id_droits){
-		$this->pdo=$pdo;
+	public function subscribeUser($login,$password,$email,$id_droits){
+		$pdo=$this->pdo;	//
 		$check= " SELECT * FROM utilisateurs WHERE login=:login OR email=:email ";
 		$prepared = $pdo->prepare($check);
         $executed = $prepared->execute([':login'=> $login,':email'=> $email]);
@@ -61,52 +61,98 @@ class user {
         }
 	}
 
+	public function updateUser($login,$password,$email,$id_droits,$id){
+		$pdo=$this->pdo;	//
+		$check= " SELECT * FROM utilisateurs WHERE login=:login OR email=:email ";
+		$prepared = $pdo->prepare($check);
+        $executed = $prepared->execute([':login'=> $login,':email'=> $email]);
+        $row = $prepared->fetch(PDO::FETCH_ASSOC);
+        if(!empty($row)){
+        	return false;
+        } else {
+		$sql = " UPDATE utilisateurs SET  login=:login,password=:password,email=:email,id_droits=:id_droits WHERE id=:id ";
+        $prepared2 = $pdo->prepare($sql);
+        $executed = $prepared2->execute([':id'=>$id,':login'=> $login ,':password'=> $password,':email'=> $email,':id_droits'=> $id_droits]);
+        }
+	}
+
 	public function connect($login,$password){
-		$this->login=$login;
-		$this->password=$password;
 		$pdo=$this->pdo;
-		$login=$this->login;
-		setcookie('connected', $login, time() +3600);
 		$prepared = $pdo->prepare("SELECT * FROM utilisateurs WHERE login = :login AND password = :password");
 		$prepared->execute(['login' => $login,':password'=> $password]); 
-		$row = $prepared->fetch();
+		$row = $prepared->fetch(PDO::FETCH_ASSOC);
 		return $row;
 	}
+
+	public function isConnected	($id){
+		if(isset($_COOKIE['connected'])){
+			return TRUE;
+		}
+	}
+
+	public function getRights($id){
+		$pdo=$this->pdo;
+		$prepared = $pdo->prepare("SELECT utilisateurs.id_droits, droits.id, droits.nom, utilisateurs.login , utilisateurs.id
+									FROM droits,utilisateurs 
+									WHERE droits.id = utilisateurs.id_droits AND utilisateurs.id = :id ");
+		$prepared->execute(['id' => $id]); 
+		$row = $prepared->fetch(PDO::FETCH_ASSOC);
+		return $row;
+
+	}
+
+	public function getComments($id){
+		$pdo=$this->pdo;
+		$prepared=$pdo->prepare("SELECT * FROM commentaires WHERE id_utilisateur = :id ");
+		$prepared->execute(['id' => $id]); 
+		$comments = $prepared->fetchAll(PDO::FETCH_ASSOC);
+		return $comments;		
+	}
+	public function editComment($id,$edit){
+		$sql = " UPDATE commentaires SET  commentaire=:commentaire WHERE id=:id ";
+        $prepared2 = $pdo->prepare($sql);
+        $executed = $prepared2->execute([':id'=>$id,':commentaire'=>$edit]);
+	}
 }
+
 
 
 // class article ____________
 
 class article {
 
-	protected $conn;
+	protected $pdo;
 
-	function __construct($conn){
-		$this->conn=$conn;
-		$conn=$this->conn;
-		return $conn;
+	function __construct($pdo){
+		$this->pdo=$pdo;
+		$pdo=$this->pdo;
+		return $pdo;
 	}
 
 	public function getAllarticles(){
-		$conn=$this->conn;
-		$prepared=$conn->prepare("  SELECT articles.article, articles.id_utilisateur, articles.id_categorie, utilisateurs.id, utilisateurs.login
-									FROM articles,utilisateurs 
-									WHERE articles.id_utilisateur = utilisateurs.id");
+		$pdo=$this->pdo;
+		$prepared=$pdo->prepare("  SELECT  articles.article, articles.id_utilisateur, articles.id_categorie, utilisateurs.id, utilisateurs.login,
+											categories.id, categories.nom
+									FROM articles
+									INNER JOIN articles ON articles.id_utilisateur = utilisateurs.id
+									INNER JOIN articles ON articles.id_categories = categories.id;");
 		$executed=$prepared->execute();
 		$row = $prepared->fetchAll();
 		return $row;
 	}
+	public function idToNomCat($id_categories){
 
+	}
 }
 
 
 //class categories __________
 class categories {
-	public $id,$nom;
+	public $pdo,$id,$nom;
 
-	function __construct(){
-		$id=$this->id;
-		$nom=$this->nom;
+	function __construct($pdo){
+		$pdo=$this->pdo;
+		return $pdo;
 	}
 }
 

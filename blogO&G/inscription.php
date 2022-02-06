@@ -15,7 +15,6 @@ session_start();
 <?php 
 
 require_once 'menu.php';
-
 require_once 'function.php';
 require_once 'model.php';
 require_once 'config/config.php';
@@ -24,12 +23,13 @@ $pdo=$mydb->getConn();
 
 echo $menu;
 
-if(!isset($_SESSION['user'])){
+if(!isset($_COOKIE['user'])){
 	$sess=null;
 	echo rightHeader($sess);
 } else {
-	echo rightHeader($sess);
+	echo rightHeader($_COOKIE['user']);
 }
+
 
 ?>
 </header><br><br><br>
@@ -41,20 +41,27 @@ if(!isset($_SESSION['user'])){
 if($_POST){
 	switch($_POST):
 		case isset($_POST['home']):
-				setcookie('form', null, -1, '/');
+				setcookie('form', null, -1);
+				session_destroy();
 				header('location:index.php');
 				exit();
 				break;
 		case isset($_POST['login']):
-				setcookie('form', null, -1, '/');
 				setcookie('form','login', time() +3600);
 				header('location: inscription.php');
 				exit();
 				break;
 		case isset($_POST['subscribe']):
-				setcookie('form', null, -1, '/');
 				setcookie('form','subscribe', time() +3600);
 				header('location: inscription.php');
+				exit();
+				break;
+		case isset($_POST['disconnect']):
+				setcookie('user', 0, -1);
+				setcookie('connected', 0, -1);
+				session_destroy();
+				session_write_close();
+				header('location: index.php');
 				exit();
 				break;
 	endswitch;
@@ -62,7 +69,7 @@ if($_POST){
 
 if(isset($_COOKIE['form'])){
 	echo rightForm($_COOKIE['form']);
-}
+} 
 
 $user=new user($pdo); 	// get my user class
 
@@ -77,12 +84,11 @@ if( testPost(isset($_POST['username']))&&
 			$password=$_POST['password'];
 			$email=$_POST['email'];
 			$id_droits=1; //int cause in bd int id
-			$user=$user->subscribeUser($pdo,$login,$password,$email,$id_droits);
+			$user=$user->subscribeUser($login,$password,$email,$id_droits);
 		if($user===false){
 			echo 'This user already exists.<br>Please, choose another username or log in <br> to get access to your account';
 		} else {
-			echo 'Thanks! You\'re subscription is complete, you\'ll be redirected to the login page.';
-			setcookie('form', null, -1, '/');
+			echo '<span class="fakemodal">Thanks! You\'re subscription is complete, you\'ll be redirected to the login page.</span>';
 			setcookie('form','login', time() +3600);
 			header( "refresh:2;url=inscription.php" );
 		}
@@ -96,8 +102,10 @@ if(isset($_POST['connect'])||isset($_POST['password_conn'])){
 				$password=$_POST['password_conn'];
 				$row=$user->connect($login,$password,$user);
 				if(!empty($row)){
-					echo 'Hi &#160;'.'<b>'.$login.'</b>'.'&#160; you\'re now connected. ';
-					header('location: profil.php');
+					echo '<span class="fakemodal">succesfully connected. Hi <b>'.$login.'<b></span>';
+					setcookie('user','user', time() +3600);	
+					setcookie('connected',$row['id'], time() +3600);				
+					header( "refresh:1.5;url=profil.php" );
 				} else {
 					echo '<span>Incorrect username or password</span>';
 				}

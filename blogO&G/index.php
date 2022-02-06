@@ -2,8 +2,7 @@
 
 session_start();
 
-include 'config/config.php';
-
+require_once 'config/config.php';
 require_once 'function.php';
 require_once 'model.php';
 
@@ -26,14 +25,23 @@ require_once 'menu.php';
 
 echo $menu;
 
-if(!isset($_SESSION['user'])){
+if(!isset($_COOKIE['user'])){
 	$sess=null;
 	echo rightHeader($sess);
 } else {
-	echo rightHeader($sess);
+	echo rightHeader($_COOKIE['user']);
 }
 
-if(true){
+if(isset($_POST['disconnect'])){
+				setcookie('connected',0, -1);	
+				setcookie('user', null, -1);	
+				setcookie('form', null, -1);
+				session_destroy();
+				session_write_close();
+				header('location: index.php');
+}
+
+if($_POST){
 	switch($_POST):
 		case isset($_POST['subscribe']):
 			setcookie('form','subscribe', time() +3600);
@@ -45,6 +53,7 @@ if(true){
 			header('location: inscription.php');
 				exit();
 				break;
+
 	endswitch;
 }
 
@@ -56,10 +65,14 @@ if(true){
 
 $article=new article($conn);
 $article=$article->getAllArticles();
+var_dump($article);
 viewArticles($article);
-
+require_once 'categories_bar.php';
+echo $catnav;
 
 ?>
 	</main>
 </body>
+	<footer>
+	</footer>
 </html>
