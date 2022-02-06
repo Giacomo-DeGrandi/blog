@@ -131,18 +131,16 @@ class article {
 
 	public function getAllarticles(){
 		$pdo=$this->pdo;
-		$prepared=$pdo->prepare("  SELECT  articles.article, articles.id_utilisateur, articles.id_categorie, utilisateurs.id, utilisateurs.login,
-											categories.id, categories.nom
+		$prepared=$pdo->prepare("  SELECT articles.article, utilisateurs.login, categories.nom
 									FROM articles
-									INNER JOIN articles ON articles.id_utilisateur = utilisateurs.id
-									INNER JOIN articles ON articles.id_categories = categories.id;");
+									JOIN utilisateurs
+									  ON articles.id_utilisateur = utilisateurs.id
+									JOIN categories
+									  ON articles.id_categorie = categories.id");	
 		$executed=$prepared->execute();
 		$row = $prepared->fetchAll();
-		return $row;
-	}
-	public function idToNomCat($id_categories){
-
-	}
+		return $row; 
+	}																			
 }
 
 

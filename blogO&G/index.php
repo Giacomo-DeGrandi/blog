@@ -65,7 +65,6 @@ if($_POST){
 
 $article=new article($conn);
 $article=$article->getAllArticles();
-var_dump($article);
 viewArticles($article);
 require_once 'categories_bar.php';
 echo $catnav;

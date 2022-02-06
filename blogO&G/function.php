@@ -130,7 +130,7 @@ function numToTextCategories($id_categories){		//get just the beginning of the a
 function viewArticles($article){
 		for($i=0;$i<3;$i++){
 		echo '<tr><td><h2>'.$article[$i]['login'].'</h2>';
-		echo '<h4><i>'.numToTextCategories($article[$i]['id_categorie']).'</i></h4>';
+		echo '<h4><i>'.numToTextCategories($article[$i]['nom']).'</i></h4>';
 		echo '<div class="authorname">'.textBeginning($article[$i]['article']).'</div>';
 		echo '<p>'.textBeginning2($article[$i]['article']).'...</p>';
 		echo '<h5><small><i>continue to read</i></small></td>';
