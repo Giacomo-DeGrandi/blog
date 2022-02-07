@@ -149,8 +149,17 @@ class categories {
 	public $pdo,$id,$nom;
 
 	function __construct($pdo){
+		$this->pdo=$pdo;
 		$pdo=$this->pdo;
 		return $pdo;
+	}
+
+	function getAllCategories(){
+		$pdo=$this->pdo;
+		$prepared=$pdo->prepare("SELECT * FROM categories ");
+		$prepared->execute(); 
+		$categories = $prepared->fetchAll(PDO::FETCH_ASSOC);
+		return $categories;		
 	}
 }
 

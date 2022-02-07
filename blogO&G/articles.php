@@ -9,7 +9,7 @@ session_start();
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>articles</title>
-	<link rel="stylesheet" type="text/css" href="public/css/blog.css">
+	<link rel="stylesheet" type="text/css" href="./public/css/blog.css">
 </head>
 <header>
 <?php 
@@ -20,7 +20,15 @@ require_once 'config/config.php';
 $mydb=new myDb($server,$username,$password,$database);
 $pdo=$mydb->getConn();
 
-echo $menu;		// print my menu
+//__menu
+
+$categories=new categories($pdo);
+$categories=$categories->getAllCategories();
+require_once 'menu.php';
+$forms=menuSubNav($categories);
+$menu=str_replace( "<span>categories</span>", $forms, $menu);
+echo $menu;
+
 
 $user=new user($pdo);		// get my user
 
@@ -40,7 +48,7 @@ if($_POST){
 				setcookie('connected',$row['id'], -1);	
 				setcookie('user', $row['nom'], time() +3600);
 				session_destroy();
-				header('location:index.php');
+				header('location: index.php');
 				exit();
 				break;
 		case isset($_POST['disconnect']):
@@ -69,3 +77,24 @@ if($_POST){
 </header><br><br><br>
 <body>
 	<main>
+<?php
+
+echo '<div id="articlemain">';
+$article=new article($pdo);
+$article=$article->getAllArticles();
+$article=viewArticles($article,5);
+$article=articleLayout($article);
+echo $article;
+$categories=new categories($pdo);
+$categories=$categories->getAllCategories();
+echo '</div>';
+showCatNav($categories);
+
+
+
+?>
+	</main>
+</body>
+	<footer>
+	</footer>
+</html>

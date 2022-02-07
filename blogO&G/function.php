@@ -127,14 +127,46 @@ function numToTextCategories($id_categories){		//get just the beginning of the a
 }
 
 
-function viewArticles($article){
-		for($i=0;$i<3;$i++){
-		echo '<tr><td><h2>'.$article[$i]['login'].'</h2>';
-		echo '<h4><i>'.numToTextCategories($article[$i]['nom']).'</i></h4>';
-		echo '<div class="authorname">'.textBeginning($article[$i]['article']).'</div>';
-		echo '<p>'.textBeginning2($article[$i]['article']).'...</p>';
-		echo '<h5><small><i>continue to read</i></small></td>';
+function viewArticles($article,$x){
+	$y='';
+	for($i=0;$i<=isset($article[$i]);$i++){
+			$y .= '<div class="subart"><tr><td><h2>'.$article[$i]['login'].'</h2>
+			<h4><i>'.numToTextCategories($article[$i]['nom']).'</i></h4>
+			<div class="authorname">'.textBeginning($article[$i]['article']).'</div>
+			<p>'.textBeginning2($article[$i]['article']).'...</p>
+			<small><i>continue to read</i></small></td></tr>';
 	}
+
+	return $y;
+}
+
+function articleLayout($article){
+	$article=str_replace( "<tr><td>", "<div class='artmain'><div class='blockart'>", $article);
+	$article=str_replace( "</td></tr>", "</div></div>", $article);
+	$article=str_replace( "authorname", "authorart", $article);
+	return $article;
+}
+
+
+
+// categories controller
+
+function showCatNav($categories){
+	echo' <div class="catnav">';
+	for ($i=0;$i<=isset($categories[$i]) ;$i++) { 
+		echo '<form action="articles.php" method="get"><button type="submit" name="categories" value="'.$categories[$i]['nom'].'">'.$categories[$i]['nom'].'</button></form>&#160;&#160;&#160;';		// get on categories to call NB the changing path of css (./) for this site section
+	}
+	echo '</div>';
+}
+
+// menu controller
+
+function menuSubNav($categories){
+	$x='';
+	for ($i=0;$i<=isset($categories[$i]) ;$i++) { 
+		$x.='<form action="articles.php" method="get"><button type="submit" name="categories" value="'.$categories[$i]['nom'].'">'.$categories[$i]['nom'].'</button></form><br>';	// get on categories to call NB the changing path of css (./) for this site section
+	}
+	return $x;
 }
 
 

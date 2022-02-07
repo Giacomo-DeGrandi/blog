@@ -6,15 +6,15 @@
 	--white: white;
 	--red: red;
 	--genshad: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
-	--music: #B20D30;
-	--science: #062726;
-	--arts: #FFBA49;
 }
 
 * {
 	font-family: var(--genfont);
 }
 
+hr {
+	background-color: var(--black);
+}
 
 header {
 	display: flex;
@@ -72,6 +72,9 @@ button:hover{
 
 .authorname{
 	font-size: 5em;
+}
+.authorart{
+	font-size: 2em;
 }
 
 .profile {
@@ -197,3 +200,17 @@ display: flex;
 	border: solid 1px var(--black);
 }
 
+
+#articlemain {
+	display: flex;
+}
+.artmain{
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+.blockart{
+	padding: 10px;
+	flex: 5;
+}

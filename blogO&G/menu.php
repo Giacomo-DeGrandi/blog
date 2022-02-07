@@ -10,9 +10,9 @@ ob_start();
 				<input type="submit" name="home" value="home"/>
 				</form>
 				<div id="sub">
-					<p>science</p>
-					<p>music</p>
-					<p>arts</p>
+					<div class="menuwrapper">
+						<span>categories</span>
+					</div>
 					<form action="articles.php" method="get">
 						<button type="submit" name="articles" value="articles">articles</button>
 					</form>

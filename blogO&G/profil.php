@@ -20,7 +20,14 @@ require_once 'config/config.php';
 $mydb=new myDb($server,$username,$password,$database);
 $pdo=$mydb->getConn();
 
-echo $menu;		// print my menu
+//menu___
+
+$categories=new categories($pdo);
+$categories=$categories->getAllCategories();
+require_once 'menu.php';
+$forms=menuSubNav($categories);
+$menu=str_replace( "<span>categories</span>", $forms, $menu);
+echo $menu;	// print my menu
 
 $user=new user($pdo);		// get my user
 
