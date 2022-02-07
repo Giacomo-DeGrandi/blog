@@ -131,7 +131,7 @@ class article {
 
 	public function getAllarticles(){
 		$pdo=$this->pdo;
-		$prepared=$pdo->prepare("  SELECT articles.article, utilisateurs.login, categories.nom
+		$prepared=$pdo->prepare("  SELECT articles.article, utilisateurs.login, categories.nom, pictures
 									FROM articles
 									JOIN utilisateurs
 									  ON articles.id_utilisateur = utilisateurs.id
