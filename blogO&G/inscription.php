@@ -54,12 +54,12 @@ if($_POST){
 				exit();
 				break;
 		case isset($_POST['login']):
-				setcookie('form','login', time() +3600);
+				setcookie('form','login', time() +36000);
 				header('location: inscription.php');
 				exit();
 				break;
 		case isset($_POST['subscribe']):
-				setcookie('form','subscribe', time() +3600);
+				setcookie('form','subscribe', time() +36000);
 				header('location: inscription.php');
 				exit();
 				break;
@@ -96,7 +96,7 @@ if( testPost(isset($_POST['username']))&&
 			echo 'This user already exists.<br>Please, choose another username or log in <br> to get access to your account';
 		} else {
 			echo '<span class="fakemodal">Thanks! You\'re subscription is complete, you\'ll be redirected to the login page.</span>';
-			setcookie('form','login', time() +3600);
+			setcookie('form','login', time() +36000);
 			header( "refresh:2;url=inscription.php" );
 		}
 } else {
@@ -110,8 +110,8 @@ if(isset($_POST['connect'])||isset($_POST['password_conn'])){
 				$row=$user->connect($login,$password,$user);
 				if(!empty($row)){
 					echo '<span class="fakemodal">succesfully connected. Hi <b>'.$login.'<b></span>';
-					setcookie('user','user', time() +3600);	
-					setcookie('connected',$row['id'], time() +3600);				
+					setcookie('user','user', time() +36000);	
+					setcookie('connected',$row['id'], time() +36000);				
 					header( "refresh:1.5;url=profil.php" );
 				} else {
 					echo '<span>Incorrect username or password</span>';
@@ -122,4 +122,10 @@ if(isset($_POST['connect'])||isset($_POST['password_conn'])){
 ?>
 	</main>
 </body>
+	<footer>
+		<div id="ourfooter">
+			<a href="https://github.com/Giacomo-DeGrandi"><img src="/pictures/githublogo.png"> git G</a>
+			<a href="https://github.com/Giacomo-DeGrandi">git O</a>
+		</div>
+	</footer>
 </html>

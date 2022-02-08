@@ -45,7 +45,7 @@ if($_POST){
 		case isset($_POST['home']):
 				$row=$user->getRights($id);
 				setcookie('connected',$row['id'], -1);	
-				setcookie('user', $row['nom'], time() +3600);
+				setcookie('user', $row['nom'], time() +36000);
 				session_destroy();
 				header('location:index.php');
 				exit();
@@ -59,6 +59,20 @@ if($_POST){
 				header('location: index.php');
 				exit();
 				break;
+		case(isset($_POST['modify'])):
+			$form=1;
+			echo '<div class="fakemodal">';
+			if($form==1){
+				echo '<small>update your personal <br>informations here</small>';
+				$form=showUserForm();
+				echo $form;
+				echo '</div>';
+				echo '<style> #infoblock{ background-color:var(--black); opacity:0.3; .fakemodal{ opacity:1;}}</style>';
+			}
+			if(isset($_POST['close'])){
+				$form=0;
+				header('location:profil.php');
+			}
 	endswitch;
 }
 
@@ -87,21 +101,6 @@ if(isset($_COOKIE['connected'])){
 
 } // remember header location if !isset 
 
-if(isset($_POST['modify'])){
-	$form=1;
-	echo '<div class="fakemodal">';
-	if($form==1){
-		echo '<small>update your personal <br>informations here</small>';
-		$form=showUserForm();
-		echo $form;
-		echo '</div>';
-		echo '<style> #infoblock{ background-color:var(--black); opacity:0.3; .fakemodal{ opacity:1;}}</style>';
-	}
-	if(isset($_POST['close'])){
-		$form=0;
-		header('location:profil.php');
-	}
-} 
 
 if( testPost(isset($_POST['username']))&&
 	testPost(isset($_POST['password']))&&
@@ -125,17 +124,71 @@ if( testPost(isset($_POST['username']))&&
 		}
 }
 
+echo '</div><br>';
+
 ?>
+	<div class="mod">
+		<div class="blocksm">
+			<h2>write a new article here:</h2>
+			<form action="" method="post">
+			<button type="submit" name="write_article" value="send" id="write">write</button></form><br>
+<?php
+
+if(isset($_COOKIE['connected'])){
+	$id=$_COOKIE['connected'];
+	$row=$user->getRights($id);
+	if($row['nom']==='administrateur'||$row['nom']==='moderateur'){ 
+		if(isset($_POST['write_article'])||isset($_POST['create'])){
+			$form=1;
+			echo '<div class="fakemodaltext">';
+			if($form==1){
+				require_once 'creer-article.php';
+				$list=catList($categories,$create);
+				if( testPost(isset($_POST['sendarticle']))&&
+					testPost(isset($_POST['articletext']))&&
+					isset($_POST['categorieslist'])	){
+						$categories=new categories($pdo);
+						$articletext=$_POST['articletext'];
+						$id_utilisateur=$_COOKIE['connected'];
+						$id_categories=$categories->nomToNum($_POST['categorieslist']);
+						var_dump($user);
+						$article=$user->addArticleFromProfile($id_utilisateur,$id_categories,$articletext);
+				}
+				echo $list;
+			}
+			if(isset($_POST['close'])){
+				$form=0;
+				header('location:profil.php');
+			}
+		}
+	} else {
+		echo '<small>you need to be a moderator or administrator to write articles</small>';
+		echo '<style> #write{ background-color:var(--black); opacity:0.3; .fakemodal{ opacity:1;}}</style>';
+	}
+}
+
+?>
+		</div>
+		<div class="blocksm">
+		<span><br></span>
+		</div>
 	</div>
-	<br>
-	<div class="profile">
-		<div class="blocksm">
-		<span><br>num3</span>
-		</div>
-		<div class="blocksm">
-		<span><br>num4</span>
-		</div>
+	<div class="admin">
+<?php require_once 'administrateur.php'; ?>
+	</div>
 	</div>
 	</main>
 </body>
+	<footer>
+		<div id="ourfooter">
+			<img src="./gitlogo.png" alt="gitlogoomar" width="40px" height="40px">
+			<div id="sub">
+					<div class="menuwrapper">
+						<a href="https://github.com/Giacomo-DeGrandi"> git G</a>
+						<a href="https://github.com/Omar-Diane"> git O</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</footer>
 </html>

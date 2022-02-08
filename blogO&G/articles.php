@@ -46,7 +46,7 @@ if($_POST){
 		case isset($_POST['home']):
 				$row=$user->getRights($id);
 				setcookie('connected',$row['id'], -1);	
-				setcookie('user', $row['nom'], time() +3600);
+				setcookie('user', $row['nom'], time() +36000);
 				session_destroy();
 				header('location: index.php');
 				exit();
@@ -61,15 +61,43 @@ if($_POST){
 				exit();
 				break;
 		case isset($_POST['subscribe']):
-				setcookie('form','subscribe', time() +3600);
+				setcookie('form','subscribe', time() +36000);
 				header('location: inscription.php');
 				exit();
 				break;
 		case isset($_POST['login']):
-				setcookie('form','login', time() +3600);
+				setcookie('form','login', time() +36000);
 				header('location: inscription.php');
 				exit();
 				break;
+		case isset($_POST['create']):
+			$form=1;
+			$user=new user($pdo);
+			if(isset($_COOKIE['connected'])){
+				$id=$_COOKIE['connected'];
+				$row=$user->getRights($id);
+				if($row['nom']==='administrateur'||$row['nom']==='moderateur'){ 
+					echo '<div class="fakemodaltext2">';
+					if($form==1){
+						require_once 'creer-article.php';
+						$list=catList($categories,$create);
+						if( testPost(isset($_POST['sendarticle']))&&
+							testPost(isset($_POST['articletext']))&&
+							isset($_POST['categorieslist'])	){
+								$articletext=$_POST['articletext'];
+								$id_utilisateur=$_COOKIE['connected'];
+								$id_categories=$categories->nomToNum($_POST['categorieslist']);
+								var_dump($user);
+								$article=$user->addArticleFromProfile($id_utilisateur,$id_categories,$articletext);
+						}
+						echo $list;
+					}
+					if(isset($_POST['close'])){
+						$form=0;
+						header("Refresh:0");
+					}
+				}
+			}
 	endswitch;
 }
 
@@ -79,22 +107,46 @@ if($_POST){
 	<main>
 <?php
 
-echo '<div id="articlemain">';
+
+
+echo '<div id="articleid">';
 $article=new article($pdo);
-$article=$article->getAllArticles();
-$article=viewArticles($article,5);
-$article=articleLayout($article);
+$count=$article->totalNum();
+$articles=$article->getAllArticles();
+$articlealias=$articles;
+if($_GET){
+	switch ($_GET):
+		case !isset($_GET['start']):
+			$k=0;
+			$articles=viewAllArticles($articles,$k);
+			break;
+		case isset($_GET['start']):
+			$k=$_GET['start'];
+			$articles=viewAllArticles($articles,$k);
+			break;
+	endswitch;
+	if(isset($_GET['categories'])){
+		$k=0;
+		$cat=$_GET['categories'];	
+		$articles=viewCatArticles($articlealias,$k,$cat);
+	}
+} 
+$article=articleLayout($articles);
 echo $article;
+echo '<small><i>total num of articles on this site: '.$count.'</i></small>';
+echo articlesPages($count);
 $categories=new categories($pdo);
 $categories=$categories->getAllCategories();
 echo '</div>';
 showCatNav($categories);
 
-
-
 ?>
 	</main>
 </body>
 	<footer>
+		<div id="ourfooter">
+			<a href="https://github.com/Giacomo-DeGrandi"><br><img src="gitlogo.png" alt="gitlogodeg"> git G</a>
+			<a href="https://github.com/Omar-Diane"><img src="gitlogo.png" alt="gitlogoomar"> git O</a>
+		</div>
 	</footer>
 </html>

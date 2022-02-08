@@ -2,8 +2,12 @@
 
 // funcsec _____
 
+function ctype_alnum_portable($text) {
+    return (preg_match('/^\p{L}+$/ui', $text) > 0);
+}
+
 function testPost ($post){
-	if(isset($post)&&!empty($post)&&ctype_alnum($post)&&filter_var($post, FILTER_SANITIZE_STRING)){
+	if(isset($post)&&!empty($post)&&ctype_alnum_portable($post)&&filter_var($post, FILTER_SANITIZE_STRING)){
 		return true;
 	} else {
 		return '<span>please insert a valid input and fill in all the fields</span>';
@@ -27,8 +31,8 @@ function rightHeader($cookie){
 			break;
 		case 'moderateur':
 		case 'administrateur':
-			$header='<form action="profil.php" method="post"><input type="submit" name="profil" value="profil"/>
-					 <form action="create.php" method="post"><input type="submit" name="create" value="create"/>
+			$header='<form action="profil.php" method="post"><input type="submit" name="profil" value="profil"/></form>
+					 <form action="" method="post"><input type="submit" name="create" value="create"/></form>
 					 <form action="index.php" method="post"><input type="submit" name="disconnect" value="disconnect"/></form></div>';
 			return $header;
 			break;
@@ -99,12 +103,20 @@ function showComments($row){
 	echo '</div>';
 }
 
-
+function catList($categories,$create){
+	$tmp='<i><small>chose a category: &#160; </small></i><input list="categories" id="cats" name="categorieslist"/><datalist id="categories">';
+	for($i=0;$i<=isset($categories[$i]);$i++){
+		$tmp .= '<option value="'.$categories[$i]['nom'].'">';
+	}
+	$tmp = $tmp.'</datalist><br><br>';
+	$create=str_replace( "<span>insert data list here</span>", $tmp, $create);
+	return $create.'<form action="" method="post"><input type="submit" name="close" value="close" id="modifybtn"></input></form></div><style> #write{ background-color:var(--black); opacity:0.3; .fakemodal{ opacity:1;}}</style>';
+}
 
  // article controller__________
 
 function textBeginning($text){		//get just the beginning of the article as a title
-	$text=substr($text,0,15);
+	$text=substr($text,0,25);
 	return $text;
 }
 function textBeginning2($text){		//get just the beginning of the article as a title
@@ -112,32 +124,75 @@ function textBeginning2($text){		//get just the beginning of the article as a ti
 	return $text;
 }
 
-function numToTextCategories($id_categories){		//get just the beginning of the article as a title
-	switch($id_categories){
-		case 1:
-			$category='science';
-			return $category;
-		case 2:
-			$category='music';
-			return $category;			
-		case 3:
-			$category='arts';
-			return $category;
+function viewAllArticles($article,$n){
+	$tmp='';
+	$m=$n+4;
+	for($i=$n;$i<=$m;$i++){
+		if(isset($article[$i])){
+			$tmp .= '<div class="subart"><tr><td><h2>'.$article[$i]['login'].'</h2>
+			<h4><form action="articles.php" method="get"><button type="submit" name="categories" value="'.$article[$i]['nom'].'">'.$article[$i]['nom'].'</button></form><br></h4><i>'.$article[$i]['date'].'</i>
+			<div class="authorname">'.textBeginning($article[$i]['article']).'...</div>
+			<p>'.textBeginning2($article[$i]['article']).'...</p>
+			<small><form action="article.php" method="get"><button type="submit" name="id" value="'.$article[$i]['id'].'"><i>continue to read</i></button></form></small></td></tr>';
+		}
+	}
+	return $tmp;
+}
+function viewCatArticles($article,$n,$cat){
+	$tmp='';
+	$m=$n+4;
+	for($i=$n;$i<=$m;$i++){
+		if(isset($article[$i])){
+			if($article[$i]['nom']===$cat){
+				$tmp .= '<div class="subart"><tr><td><h2>'.$article[$i]['login'].'</h2>
+				<h4><form action="articles.php" method="get"><button type="submit" name="categories" value="'.$article[$i]['nom'].'">'.$article[$i]['nom'].'</button></form><br><i>'.($article[$i]['nom']).'</i></h4><i>'.$article[$i]['date'].'</i>
+				<div class="authorname">'.textBeginning($article[$i]['article']).'...</div>
+				<p>'.textBeginning2($article[$i]['article']).'...</p>
+				<small><form action="article.php" method="get"><button type="submit" name="id" value="'.$article[$i]['id'].'"><i>continue to read</i></button></form></small></td></tr>';
+			}
+		}
+	}
+	return $tmp;
+}
+
+function articlesPages($count){
+	$tmp='';
+	$pagenum = round(($count+5/2)/5)*5; // SO s
+	$maxnum=$pagenum;
+	if($count<=$pagenum){
+		$pagenum/=5;
+		for($i=0;$i<$pagenum;$i++){
+			if($i==0){
+				$tmp.= '<form action="articles.php" method="get"><button type="submit" name="start" value="'.($i*5).'">newest articles</button></form>';
+			} else {
+				$tmp.= '<form action="articles.php" method="get"><button type="submit" name="start" value="'.($i*5).'">go to page '.$i.'</button></form>';
+			}
+		}
+		return $tmp;
 	}
 }
 
+function viewOneArticle($article){
+
+	$tmp='<div class="subart"><tr><td><h2>'.$article[0]['login'].'</h2>
+		<h4><form action="articles.php" method="get"><button type="submit" name="categories" value="'.$article[0]['nom'].'">'.$article[0]['nom'].'</button></form><br></h4><i>'.$article[0]['date'].'</i>
+		<div class="authorname">'.textBeginning($article[0]['article']).'...</div>
+		<p>'.$article[0]['article'].'</p>
+		<small><form action="articles.php" method="get"><button type="submit" name="articles" value="articles"><i>back to articles page</i></button></form></small></td></tr>';
+	return $tmp;
+
+}
 
 function viewArticles($article,$x){
-	$y='';
-	for($i=0;$i<=isset($article[$i]);$i++){
-			$y .= '<div class="subart"><tr><td><h2>'.$article[$i]['login'].'</h2>
-			<h4><i>'.numToTextCategories($article[$i]['nom']).'</i></h4>
-			<div class="authorname">'.textBeginning($article[$i]['article']).'</div>
+	$tmp='';
+	for($i=0;$i<=$x;$i++){
+			$tmp .= '<div class="subart"><tr><td><h2>'.$article[$i]['login'].'</h2>
+			<h4><form action="articles.php" method="get"><button type="submit" name="categories" value="'.$article[$i]['nom'].'">'.$article[$i]['nom'].'</button></form><br></h4><i>'.$article[$i]['date'].'</i>
+			<div class="authorname">'.textBeginning($article[$i]['article']).'...</div>
 			<p>'.textBeginning2($article[$i]['article']).'...</p>
-			<small><i>continue to read</i></small></td></tr>';
+			<small><form action="article.php" method="get"><button type="submit" name="id" value="'.$article[$i]['id'].'"><i>continue to read</i></button></form></small></td></tr>';
 	}
-
-	return $y;
+	return $tmp;
 }
 
 function articleLayout($article){
@@ -146,8 +201,6 @@ function articleLayout($article){
 	$article=str_replace( "authorname", "authorart", $article);
 	return $article;
 }
-
-
 
 // categories controller
 
@@ -159,14 +212,41 @@ function showCatNav($categories){
 	echo '</div>';
 }
 
+
 // menu controller
 
 function menuSubNav($categories){
-	$x='';
+	$tmp='';
 	for ($i=0;$i<=isset($categories[$i]) ;$i++) { 
-		$x.='<form action="articles.php" method="get"><button type="submit" name="categories" value="'.$categories[$i]['nom'].'">'.$categories[$i]['nom'].'</button></form><br>';	// get on categories to call NB the changing path of css (./) for this site section
+		$tmp.='<form action="articles.php" method="get"><button type="submit" name="categories" value="'.$categories[$i]['nom'].'">'.$categories[$i]['nom'].'</button></form><br>';	// get on categories to call NB the changing path of css (./) for this site section
 	}
-	return $x;
+	return $tmp;
+}
+
+// comments functions_______
+
+function showCommentsOnArticles($comments){
+	$tmp='<div class="maindivcomments"><div class="commentsubdiv">';
+	if(isset($comments)){
+		for($i=0;$i<=isset($comments[$i]);$i++){
+			$tmp .='<br><div class="onecomm">by: '.$comments[$i]['login'].'
+					<br><p>"'.$comments[$i]['commentaire'].'"</p></div>';
+		}
+	}
+	return $tmp .'</div>';
+}
+
+function commentsForm($cookie){
+	$tmp=' <div class="commentsform">';
+	if(!isset($cookie)){
+	$tmp .= '<style> .commentsform { pointer-events: none; } </style>
+		  <small>log in or subscribe to leave a comment</small>';
+	} else {
+	$tmp .='<span><p>leave a comment here</p></span><form action="" method="post"><textarea name="comment" rows="5" cols="33"></textarea><br>
+			<button type="submit" name="submitcomment" value="send">send</button></form><br>';
+	}
+
+	return $tmp.'</div>';
 }
 
 

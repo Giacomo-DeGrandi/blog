@@ -95,7 +95,7 @@ class user {
 		$prepared = $pdo->prepare("SELECT utilisateurs.id_droits, droits.id, droits.nom, utilisateurs.login , utilisateurs.id
 									FROM droits,utilisateurs 
 									WHERE droits.id = utilisateurs.id_droits AND utilisateurs.id = :id ");
-		$prepared->execute(['id' => $id]); 
+		$prepared->execute([':id' => $id]); 
 		$row = $prepared->fetch(PDO::FETCH_ASSOC);
 		return $row;
 
@@ -113,8 +113,24 @@ class user {
         $prepared2 = $pdo->prepare($sql);
         $executed = $prepared2->execute([':id'=>$id,':commentaire'=>$edit]);
 	}
+	public function addArticleFromProfile($id_utilisateur,$id_categories,$articletext){
+		$pdo=$this->pdo;
+		$id_categories=$id_categories[0]['id'];
+		$date= date("Y-m-d H:i:s");
+		$sql= "SELECT * FROM articles WHERE date = :date ";
+		$prepared=$pdo->prepare($sql);
+		$prepared->execute([':date' => $date]); 
+		$result = $prepared->fetchAll(PDO::FETCH_ASSOC);
+		if(!empty($result)){
+			 $tmp='this article has already been added!';
+		} else {
+			$tmp='your article has been added!';
+			$prepared=$pdo->prepare( " INSERT INTO articles(article,id_categorie,id_utilisateur,date) VALUES (:article,:id_categorie,:id_utilisateur,:date) ");
+			$prepared->execute([':article' => $articletext,':id_categorie' => $id_categories,':id_utilisateur' => $id_utilisateur, ':date'=>$date]); 
+		}
+		return $tmp;	
+	}
 }
-
 
 
 // class article ____________
@@ -129,18 +145,69 @@ class article {
 		return $pdo;
 	}
 
-	public function getAllarticles(){
+	public function getAllArticles(){
 		$pdo=$this->pdo;
-		$prepared=$pdo->prepare("  SELECT articles.article, utilisateurs.login, categories.nom, pictures
+		$prepared=$pdo->prepare("  SELECT articles.article, articles.date, articles.id, utilisateurs.login, categories.nom
 									FROM articles
 									JOIN utilisateurs
 									  ON articles.id_utilisateur = utilisateurs.id
 									JOIN categories
-									  ON articles.id_categorie = categories.id");	
+									  ON articles.id_categorie = categories.id 
+									  ORDER BY articles.date DESC");	
 		$executed=$prepared->execute();
 		$row = $prepared->fetchAll();
 		return $row; 
-	}																			
+	}
+
+	public function totalNum(){
+		$pdo=$this->pdo;
+		$prepared=$pdo->query( "SELECT COUNT(*) FROM articles");
+		$count = $prepared->fetchAll();
+		return $count[0]['COUNT(*)']; 
+	}
+
+	public function getOneArticle($id){
+		$pdo=$this->pdo;
+		$prepared=$pdo->prepare( "SELECT articles.article, articles.date, articles.id, utilisateurs.login, categories.nom
+									FROM articles
+									JOIN utilisateurs
+									  ON articles.id_utilisateur = utilisateurs.id
+									JOIN categories
+									  ON articles.id_categorie = categories.id WHERE articles.id = :id ");
+		$prepared->execute([':id' => $id]); 
+		$article = $prepared->fetchAll(PDO::FETCH_ASSOC);
+		return $article;
+	}													
+}
+
+//class comments___________
+
+class comments {
+	public $pdo;
+	function __construct($pdo){
+		$this->pdo=$pdo;
+		$pdo=$this->pdo;
+		return $pdo;
+	}
+
+	function addCommentsFromArt($comment,$id_user,$id_article,$date){
+		$pdo=$this->pdo;
+        $prepared = $pdo->prepare("INSERT INTO commentaires(commentaire,id_utilisateur,id_article,date) VALUES (:commentaire,:id_utilisateur,:id_article,:date)");
+        $executed = $prepared->execute([':commentaire'=> $comment,':id_utilisateur' => $id_user,':id_article'=> $id_article,':date'=> $date ]);		
+	}
+
+	function getCommentsByArticle($id_article){
+		$pdo=$this->pdo;
+		$id=$id_article;
+		$prepared=$pdo->prepare( "SELECT commentaires.id_article, commentaires.date, commentaires.commentaire, commentaires.id_utilisateur, utilisateurs.id, utilisateurs.login
+									FROM commentaires
+									JOIN utilisateurs
+									  ON commentaires.id_utilisateur = utilisateurs.id WHERE commentaires.id_article = :id ");
+		$prepared->execute([':id' => $id]); 
+		$comments = $prepared->fetchAll(PDO::FETCH_ASSOC);
+		return $comments;		
+	}
+
 }
 
 
@@ -160,6 +227,13 @@ class categories {
 		$prepared->execute(); 
 		$categories = $prepared->fetchAll(PDO::FETCH_ASSOC);
 		return $categories;		
+	}
+	function nomToNum($categories){
+		$pdo=$this->pdo;
+		$prepared=$pdo->prepare("SELECT id FROM categories WHERE nom = :nom  ");
+		$prepared->execute([':nom'=> $categories]); 
+		$id_categories = $prepared->fetchAll(PDO::FETCH_ASSOC);
+		return $id_categories;		
 	}
 }
 
