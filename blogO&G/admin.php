@@ -45,7 +45,7 @@ if(isset($_POST['envoyer'])){
     if (isset($_POST['titre']) and isset($_POST['contenu'])) {
         $art = new article();
         $art->new_article($_POST['titre'], $_POST['contenu']);
-        echo "l'article as bien été ajouté";
+        echo "L'article as bien été ajouté";
     }
     ?>
     <form method="post" action="admin.php">
@@ -55,15 +55,14 @@ if(isset($_POST['envoyer'])){
     </form>
     <?php
     //AFFICHAGE DES MEMBRES
-    $recupUsers = $mydb -> query('SELECT * FROM utilisateurs');
+    $conn=$mydb->getConn();
+    $recupUsers = $conn -> query('SELECT * FROM utilisateurs') ;
     while ($user = $recupUsers -> fetch()){
-        echo $user['username'];
+        echo $user['login'];
+        echo $user['password'];
     }
     ?>
- 
- 
- 
- 
-    <?php
+
+<?php
 }
 ?>

@@ -1,7 +1,9 @@
 <?php 
 
 session_start();
-
+if(!$_SESSION['password']){
+	header('Location: connexion.php');
+}
 include 'config/config.php';
 
 require_once 'function.php';
