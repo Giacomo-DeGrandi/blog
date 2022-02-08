@@ -1,61 +1,141 @@
-<?php
+<?php 
 
-session_abort();
+session_start();
 
 ?>
 <!DOCTYPE html>
-<html lang="fr">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mon Profil</title>
-    <link rel="stylesheet" href="public/blog.css">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>profile</title>
+	<link rel="stylesheet" type="text/css" href="public/css/blog.css">
 </head>
-<body>
+<header>
+<?php 
+require_once 'menu.php';
+require_once 'function.php';
+require_once 'model.php';
+require_once 'config/config.php';
+$mydb=new myDb($server,$username,$password,$database);
+$pdo=$mydb->getConn();
 
-<?php
+//menu___
 
-//Connexion à la base de donnée
-require ('config/config.php');
-require_once('model.php');
-$bd = new myDb ($server, $username, $password, $database);
-$conn = getConn();
+$categories=new categories($pdo);
+$categories=$categories->getAllCategories();
+require_once 'menu.php';
+$forms=menuSubNav($categories);
+$menu=str_replace( "<span>categories</span>", $forms, $menu);
+echo $menu;	// print my menu
 
-if(isset($_SESSION['id'])){
-    $conn = "SELECT * FROM utilisateurs WHERE id = ?";
-    $req = mysqli_fetch_array($_SESSION['id']);
+$user=new user($pdo);		// get my user
 
-    if(isset($_POST['newlogin']) AND !empty($_POST['newlogin']) AND $_POST['newlogin'] != $user['login']){
-        //Maintenant je fais une requête SQL.
-        //Important de préciser l'id sinon tout les logins de chaque utilisateur dans la base de donnée seront mis à jour.
-        $insertlogin = $conn->prepare("UPDATE utilisateurs SET login = ? WHERE id = ?");
-        $insertlogin = execute(array($newlogin, $_SESSION['id']));
-    }
-
-    if(isset($_POST['newpassword']) AND !empty($_POST['newpassword']) AND $_POST['newpassword']){
-        $insertpassword = $conn->prepare("UPDATE utilisateurs SET password = ? WHERE id = ?");
-        $insertpassword = execute(array($newpassword, $_SESSION['id']));
-    }
-
-    if(isset($_POST['newemail']) AND !empty($_POST{'newemail'} AND $_POST{'newemail'} != $user['email'])){
-        $insertemail = $conn->prepare("UPDATE utilisateurs SET email = ? WHERE id = ?");
-        $insertemail = execute(array($newemail, $_SESSION['email']));
-    }
+if(!isset($_COOKIE['user'])){
+	$sess=null;
+	echo rightHeader($sess);
+} else {
+	$id=$_COOKIE['connected'];
+	$row=$user->getRights($id);
+	echo rightHeader($row['nom']);
 }
+
+if($_POST){
+	switch($_POST):
+		case isset($_POST['home']):
+				$row=$user->getRights($id);
+				setcookie('connected',$row['id'], -1);	
+				setcookie('user', $row['nom'], time() +3600);
+				session_destroy();
+				header('location:index.php');
+				exit();
+				break;
+		case isset($_POST['disconnect']):
+				setcookie('connected',0, -1);	
+				setcookie('user', null, -1);	
+				setcookie('form', null, -1);
+				session_destroy();
+				session_write_close();
+				header('location: index.php');
+				exit();
+				break;
+	endswitch;
+}
+
 ?>
-<main>
-    <h1>Mon Profil</h1>
-<form action="" method="post">
-    <label> Login :</label>
-<input type="text" name="login" value="<?php echo $user['login']; ?>" placeholder="Login">
-<label> Password :</label>
-<input type="password" name="password" value="" placeholder="Password">
-<label> Email :</label>
-<input type="email" name="email" value="<?php echo $user['email']; ?>" placeholder="Email">
-<input type="submit" name="submit" value="Modifier">
-</form>
-</main>
-    
+</header><br><br><br>
+<body>
+	<main>
+	<div class="profile">
+<?php 
+
+if(isset($_COOKIE['connected'])){
+	$id=$_COOKIE['connected'];
+	$row=$user->getRights($id);
+	echo '<div id="infoblock">';
+	showDetails($row);
+	echo '</div>';
+	$commentsrow=$user->getComments($id);
+	if($commentsrow!=null){
+	echo '<div id="mainprofile">';
+	showComments($commentsrow);
+	echo '</div>';
+	} else {	
+	echo '<div id="mainprofile">';
+	echo '</div>';
+	}
+
+} // remember header location if !isset 
+
+if(isset($_POST['modify'])){
+	$form=1;
+	echo '<div class="fakemodal">';
+	if($form==1){
+		echo '<small>update your personal <br>informations here</small>';
+		$form=showUserForm();
+		echo $form;
+		echo '</div>';
+		echo '<style> #infoblock{ background-color:var(--black); opacity:0.3; .fakemodal{ opacity:1;}}</style>';
+	}
+	if(isset($_POST['close'])){
+		$form=0;
+		header('location:profil.php');
+	}
+} 
+
+if( testPost(isset($_POST['username']))&&
+	testPost(isset($_POST['password']))&&
+	isset($_POST['email'])&&
+	filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)&&
+	testPost(isset($_POST['passwordconf']))&&
+	testPost($_POST['password'])===testPost($_POST['passwordconf'])&&
+	(isset($_POST['send'])) ){
+			$id=$_COOKIE['connected'];
+			$login=$_POST['username'];
+			$password=$_POST['password'];
+			$email=$_POST['email'];
+			$row=$user->getRights($id);
+			$id_droits=$row['id_droits']; //int cause in bd int id
+			$user=$user->updateUser($login,$password,$email,$id_droits,$id);
+		if($user===false){
+			echo 'This user already exists.<br>Please, choose another username ';
+		} else {
+			echo '<span class="fakemodal">you\'ve succesfully updated your informations</span>';
+			header("Refresh:2; url=profil.php");
+		}
+}
+
+?>
+	</div>
+	<br>
+	<div class="profile">
+        <div class="admin">
+		<?php require_once("administrateur.php"); ?>
+        </div>
+        <div class="mod">
+            <?php require_once("moderateur.php"); ?>
+        </div>
+	</div>
+	</main>
 </body>
 </html>

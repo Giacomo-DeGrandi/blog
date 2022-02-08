@@ -1,29 +1,40 @@
 <?php
 
 session_start();
+include 'config/config.php';
 
-if (isset($_POST['password'])) { #Si la variable mot de passe existe
-    if ($_POST['password'] == 'marseille') {
-        $_SESSION['connect'] = true;
-    }
-    else {
-        $_SESSION['connect'] = false;
-        echo " AIE ! Mauvais mot de passe";
+require_once 'function.php';
+require_once 'model.php';
+
+$mydb=new myDb($server,$username,$password,$database);
+$conn=$mydb->getConn();
+
+if(isset($_POST['envoyer'])){
+    if(!empty($_POST['username']) AND !empty($_POST['password'])){
+       $username_par_defaut = "admin";
+       $password_par_defaut = "admin123";
+
+       $username_saisi = htmlspecialchars($_POST['username']);
+       $password_saisi = htmlspecialchars($_POST['password']);
+
+       if($username_saisi == $username_par_defaut AND $password_saisi == $password_par_defaut){
+           header ('Location:admin.php');
+        
+       }else {
+           echo'Mot de passe ou login incorrecte';
+       }
+    }else {
+        echo "Remplis tous les champs";
     }
 }
- 
-if(isset($_SESSION['connect']) or $_SESSION['connect'] == false) { #On vérifie que l'utilisateur n'est pas connecté
-    ?>
-    <p> Vous n'êtes pas connecté, veuillez taper le mot de passe </p>
-    <input type="password" name="password">
-    <input type="submit" />
+?>
 
     <?php
     #Nous allons reproduire le même système, vérifier si on reçois les variables post de titre et de contenu. 
     #Si c’est le cas, nous allons lancer les fonctions qui ajoutent l’article à la base de donnée et 
     #afficher un message comme quoi l’article as bien été enregistré
     #Ici onécrit le code que l'administrateur verras
-} else { # Dans cette partie, on écrit le code que l'utilisateur administrateur verras
+ {  # Dans cette partie, on écrit le code que l'utilisateur administrateur verras
     ?>
  
     <p>Bienvenue, vous êtes connecté</p>
@@ -42,6 +53,13 @@ if(isset($_SESSION['connect']) or $_SESSION['connect'] == false) { #On vérifie 
         <textarea placeholder="contenu" name="contenu"></textarea>
         <input type="submit" />
     </form>
+    <?php
+    //AFFICHAGE DES MEMBRES
+    $recupUsers = $mydb -> query('SELECT * FROM utilisateurs');
+    while ($user = $recupUsers -> fetch()){
+        echo $user['username'];
+    }
+    ?>
  
  
  
