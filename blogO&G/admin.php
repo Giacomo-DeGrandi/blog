@@ -41,6 +41,7 @@ if(isset($_POST['envoyer'])){
     <p>Vous pouvez créer un nouvel article en remplissant le formulaire ci-dessous</p>
  
     <?php
+    //CREATION, MODIFICATION, SUPPRESION D'ARTICLES
     require 'article.php';
     if (isset($_POST['titre']) and isset($_POST['contenu'])) {
         $art = new article();
@@ -54,14 +55,18 @@ if(isset($_POST['envoyer'])){
         <input type="submit" />
     </form>
     <?php
-    //AFFICHAGE DES MEMBRES
+    //AFFICHAGE DES MEMBRES, SUPPRESION DES MEMBRES
     $conn=$mydb->getConn();
     $recupUsers = $conn -> query('SELECT * FROM utilisateurs') ;
     while ($user = $recupUsers -> fetch()){
         echo $user['login'];
-        echo $user['password'];
+        echo $user['password']; 
     }
+
+
     ?>
+    <a href="bannir.php?id=<?= $user['id']; ?>" style="color:red;
+    text-decoration: none;">Bannir le membre</a> 
 
 <?php
 }
