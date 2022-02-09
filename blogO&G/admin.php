@@ -43,16 +43,22 @@ if(isset($_POST['envoyer'])){
     <?php
     //CREATION, MODIFICATION, SUPPRESION D'ARTICLES
     require 'article.php';
-    if (isset($_POST['titre']) and isset($_POST['contenu'])) {
-        $art = new article();
-        $art->new_article($_POST['titre'], $_POST['contenu']);
-        echo "L'article as bien été ajouté";
+    if(isset($_POST['envoyer'])){
+        if(!empty($_POST['titre']) AND !empty($_POST['contenu'])){
+            $insertArt = $conn -> prepare('INSERT INTO articles(titre,contenu) VALUES (?, ?');
+            $insertArt = $conn -> execute(array($titre, $contenu));
+
+            echo "Article bien ajouté";
+        } else {
+            echo 'Veuillez compléter tous les champs';
+        }
     }
+
     ?>
-    <form method="post" action="admin.php">
+    <form method="post" action="">
         <input type="text" placeholder="titre" name="titre" />
         <textarea placeholder="contenu" name="contenu"></textarea>
-        <input type="submit" />
+        <input type="submit" name="envoyer" />
     </form>
     <?php
     //AFFICHAGE DES MEMBRES, SUPPRESION DES MEMBRES
