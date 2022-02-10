@@ -71,15 +71,6 @@ if($_POST){
 					if($form==1){
 						require_once 'creer-article.php';
 						$list=catList($categories,$create);
-						if( testPost(isset($_POST['sendarticle']))&&
-							testPost(isset($_POST['articletext']))&&
-							isset($_POST['categorieslist'])	){
-								$articletext=$_POST['articletext'];
-								$id_utilisateur=$_COOKIE['connected'];
-								$id_categories=$categories->nomToNum($_POST['categorieslist']);
-								var_dump($user);
-								$article=$user->addArticleFromProfile($id_utilisateur,$id_categories,$articletext);
-						}
 						echo $list;
 					}
 					if(isset($_POST['close'])){
@@ -88,6 +79,20 @@ if($_POST){
 					}
 				}
 			}
+			break;
+
+		case isset($_POST['articletext'])&&
+			 isset($_POST['categorieslist'])&&
+			 isset($_POST['sendarticle']):
+				$categories=new categories($pdo);
+				$user=new user($pdo);
+				$articletext=$_POST['articletext'];
+				$id_utilisateur=$_COOKIE['connected'];
+				$id_categories=$_POST['categorieslist'];
+				$idcat=$categories->nomToNum($id_categories);
+				$user=$user->addArticle($id_utilisateur,$idcat,$articletext);
+			break;
+
 	endswitch;
 }
 
@@ -98,11 +103,14 @@ if($_POST){
 <?php
 
 $article=new article($pdo);
-$article=$article->getAllArticles();
+$articles=$article->getAllArticles();
 echo '<table>';
-$table=viewArticles($article,2);
+$table=viewArticles($articles,3);
 echo $table;
 echo '</table>';
+$count=$article->totalNum();
+echo '<small><i>total num of articles on this site: '.$count.'</i></small>';
+echo articlesPages($count);
 $categories=new categories($pdo);
 $categories=$categories->getAllCategories();
 showCatNav($categories);
@@ -112,8 +120,13 @@ showCatNav($categories);
 </body>
 	<footer>
 		<div id="ourfooter">
-			<a href="https://github.com/Giacomo-DeGrandi"><img src="/pictures/githublogo.png"> git G</a>
-			<a href="https://github.com/Giacomo-DeGrandi">git O</a>
+			<div id="logogit">
+				<img src="gitlogo.png" alt="gitlogoomar" width="40px" height="40px" >
+				<div id="subfoot">
+					<a href="https://github.com/Omar-Diane">Omar</a>
+					<a href="https://github.com/Giacomo-DeGrandi">Giak</a>
+				</div>
+			</div>
 		</div>
 	</footer>
 </html>

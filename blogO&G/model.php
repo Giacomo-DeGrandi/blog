@@ -103,7 +103,7 @@ class user {
 
 	public function getComments($id){
 		$pdo=$this->pdo;
-		$prepared=$pdo->prepare("SELECT * FROM commentaires WHERE id_utilisateur = :id ");
+		$prepared=$pdo->prepare("SELECT * FROM commentaires WHERE id_utilisateur = :id ORDER BY date DESC");
 		$prepared->execute(['id' => $id]); 
 		$comments = $prepared->fetchAll(PDO::FETCH_ASSOC);
 		return $comments;		
@@ -113,20 +113,19 @@ class user {
         $prepared2 = $pdo->prepare($sql);
         $executed = $prepared2->execute([':id'=>$id,':commentaire'=>$edit]);
 	}
-	public function addArticleFromProfile($id_utilisateur,$id_categories,$articletext){
+	public function addArticle($id_utilisateur,$id_categories,$articletext){
 		$pdo=$this->pdo;
-		$id_categories=$id_categories[0]['id'];
 		$date= date("Y-m-d H:i:s");
-		$sql= "SELECT * FROM articles WHERE date = :date ";
+		$sql= "SELECT * FROM articles WHERE date = :date AND article = :article ";
 		$prepared=$pdo->prepare($sql);
-		$prepared->execute([':date' => $date]); 
+		$prepared->execute([':date' => $date, ':article' => $articletext]);
 		$result = $prepared->fetchAll(PDO::FETCH_ASSOC);
 		if(!empty($result)){
 			 $tmp='this article has already been added!';
 		} else {
 			$tmp='your article has been added!';
 			$prepared=$pdo->prepare( " INSERT INTO articles(article,id_categorie,id_utilisateur,date) VALUES (:article,:id_categorie,:id_utilisateur,:date) ");
-			$prepared->execute([':article' => $articletext,':id_categorie' => $id_categories,':id_utilisateur' => $id_utilisateur, ':date'=>$date]); 
+			$prepared->execute([':article' => $articletext,':id_categorie' => $id_categories,':id_utilisateur' => $id_utilisateur, ':date' => $date ]); 
 		}
 		return $tmp;	
 	}
@@ -168,7 +167,7 @@ class article {
 
 	public function getOneArticle($id){
 		$pdo=$this->pdo;
-		$prepared=$pdo->prepare( "SELECT articles.article, articles.date, articles.id, utilisateurs.login, categories.nom
+		$prepared=$pdo->prepare( "SELECT articles.article, articles.date, articles.id, utilisateurs.login, categories.nom, utilisateurs.id
 									FROM articles
 									JOIN utilisateurs
 									  ON articles.id_utilisateur = utilisateurs.id
@@ -177,6 +176,20 @@ class article {
 		$prepared->execute([':id' => $id]); 
 		$article = $prepared->fetchAll(PDO::FETCH_ASSOC);
 		return $article;
+	}
+
+	public function getUserArticles($id_user){
+		$pdo=$this->pdo;
+		$prepared=$pdo->prepare( "SELECT articles.article, articles.date, articles.id, utilisateurs.login, categories.nom
+									FROM articles
+									JOIN utilisateurs
+									  ON articles.id_utilisateur = utilisateurs.id
+									JOIN categories
+									  ON articles.id_categorie = categories.id WHERE utilisateurs.id = :id ORDER BY articles.date DESC ");
+		$prepared->execute([':id' => $id_user]); 
+		$article = $prepared->fetchAll(PDO::FETCH_ASSOC);
+		return $article;
+
 	}													
 }
 
@@ -202,10 +215,30 @@ class comments {
 		$prepared=$pdo->prepare( "SELECT commentaires.id_article, commentaires.date, commentaires.commentaire, commentaires.id_utilisateur, utilisateurs.id, utilisateurs.login
 									FROM commentaires
 									JOIN utilisateurs
-									  ON commentaires.id_utilisateur = utilisateurs.id WHERE commentaires.id_article = :id ");
+									  ON commentaires.id_utilisateur = utilisateurs.id WHERE commentaires.id_article = :id ORDER BY commentaires.date DESC");
 		$prepared->execute([':id' => $id]); 
 		$comments = $prepared->fetchAll(PDO::FETCH_ASSOC);
 		return $comments;		
+	}
+	function getCommentsByCommId($id_comm){
+		$pdo=$this->pdo;
+		$id=$id_comm;
+		$prepared=$pdo->prepare( "SELECT * FROM commentaires WHERE id = :id ");
+		$prepared->execute([':id' => $id]); 
+		$comment = $prepared->fetchAll(PDO::FETCH_ASSOC);
+		return $comment;		
+	}
+	function editCommentFromProfile($id_comm,$commentaire){
+		$pdo=$this->pdo;
+		$id=$id_comm;
+		$prepared=$pdo->prepare(" UPDATE commentaires SET commentaire=:commentaire WHERE id=:id ");
+		$prepared->execute([':commentaire'=> $commentaire,':id'=> $id ]);	
+	}
+	function deleteComment($id_comm){
+		$pdo=$this->pdo;
+		$id=$id_comm;
+		$prepared=$pdo->prepare(" DELETE FROM commentaires WHERE id=:id ");
+		$prepared->execute([':id'=> $id ]);		
 	}
 
 }
@@ -232,7 +265,8 @@ class categories {
 		$pdo=$this->pdo;
 		$prepared=$pdo->prepare("SELECT id FROM categories WHERE nom = :nom  ");
 		$prepared->execute([':nom'=> $categories]); 
-		$id_categories = $prepared->fetchAll(PDO::FETCH_ASSOC);
+		$id_categories = $prepared->fetchAll();
+		$id_categories=$id_categories[0]['id'];
 		return $id_categories;		
 	}
 }

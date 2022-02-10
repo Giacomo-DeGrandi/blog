@@ -81,15 +81,6 @@ if($_POST){
 					if($form==1){
 						require_once 'creer-article.php';
 						$list=catList($categories,$create);
-						if( testPost(isset($_POST['sendarticle']))&&
-							testPost(isset($_POST['articletext']))&&
-							isset($_POST['categorieslist'])	){
-								$articletext=$_POST['articletext'];
-								$id_utilisateur=$_COOKIE['connected'];
-								$id_categories=$categories->nomToNum($_POST['categorieslist']);
-								var_dump($user);
-								$article=$user->addArticleFromProfile($id_utilisateur,$id_categories,$articletext);
-						}
 						echo $list;
 					}
 					if(isset($_POST['close'])){
@@ -98,8 +89,21 @@ if($_POST){
 					}
 				}
 			}
+			break;		
+		case isset($_POST['articletext'])&&
+			 isset($_POST['categorieslist'])&&
+			 isset($_POST['sendarticle']):
+				$categories=new categories($pdo);
+				$user=new user($pdo);
+				$articletext=$_POST['articletext'];
+				$id_utilisateur=$_COOKIE['connected'];
+				$id_categories=$_POST['categorieslist'];
+				$idcat=$categories->nomToNum($id_categories);
+				$user=$user->addArticle($id_utilisateur,$idcat,$articletext);
+			break;
 	endswitch;
 }
+
 
 ?>
 </header><br><br><br>
@@ -130,7 +134,8 @@ if($_GET){
 		$cat=$_GET['categories'];	
 		$articles=viewCatArticles($articlealias,$k,$cat);
 	}
-} 
+}
+
 $article=articleLayout($articles);
 echo $article;
 echo '<small><i>total num of articles on this site: '.$count.'</i></small>';
@@ -145,8 +150,13 @@ showCatNav($categories);
 </body>
 	<footer>
 		<div id="ourfooter">
-			<a href="https://github.com/Giacomo-DeGrandi"><br><img src="gitlogo.png" alt="gitlogodeg"> git G</a>
-			<a href="https://github.com/Omar-Diane"><img src="gitlogo.png" alt="gitlogoomar"> git O</a>
+			<div id="logogit">
+				<img src="gitlogo.png" alt="gitlogoomar" width="40px" height="40px" >
+				<div id="subfoot">
+					<a href="https://github.com/Omar-Diane">Omar</a>
+					<a href="https://github.com/Giacomo-DeGrandi">Giak</a>
+				</div>
+			</div>
 		</div>
 	</footer>
 </html>

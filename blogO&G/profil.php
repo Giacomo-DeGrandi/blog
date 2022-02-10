@@ -60,21 +60,62 @@ if($_POST){
 				exit();
 				break;
 		case(isset($_POST['modify'])):
+				$form=1;
+				echo '<div class="fakemodal">';
+				if($form==1){
+					echo '<small>update your personal <br>informations here</small>';
+					$form=showUserForm();
+					$form=str_replace('replaceme', 'profil.php', $form);
+					echo $form;
+					echo '</div>';
+					echo '<style> #infoblock{ background-color:var(--black); } .fakemodal{ opacity:1;}</style>';
+				}
+				if(isset($_POST['close'])){
+					$form=0;
+					header('location:profil.php');
+				}
+				exit();
+				break;
+		case isset($_POST['editcomm']):
 			$form=1;
-			echo '<div class="fakemodal">';
+			echo '<div class="fakemodalcomm">';
 			if($form==1){
-				echo '<small>update your personal <br>informations here</small>';
-				$form=showUserForm();
-				echo $form;
-				echo '</div>';
-				echo '<style> #infoblock{ background-color:var(--black); opacity:0.3; .fakemodal{ opacity:1;}}</style>';
+				echo '<small>edit your comment:</small>';
+				require_once 'comment-form.php';
+				$id_comment=$_POST['editcomm'];
+				$comment=new comments($pdo);
+				$comment=$comment->getCommentsByCommId($id_comment);
+				//var_dump($comment);
+				$commform=str_replace('DATEX',$comment[0]['date'],$commform);
+				$commform=str_replace('pholder',$comment[0]['commentaire'],$commform);
+				$commform=str_replace('mycommvalue',$comment[0]['id'],$commform);
+				echo $commform;
+				echo '<form action="" method="post"><input type="submit" name="close" value="close" id="modifybtn"></input></form>';
+				echo '<style>  .fakemodalcomm{ opacity:1;}</style>';
 			}
 			if(isset($_POST['close'])){
 				$form=0;
 				header('location:profil.php');
 			}
+			exit();
+			break;
+		case isset($_POST['updatecomment']):
+			if(isset($_POST['commenttext'])){
+				if(testPost($_POST['commenttext'])===true){
+					$comment=new comments($pdo);
+					$id_comm=$_POST['updatecomment'];
+					$commentaire=$_POST['commenttext'];
+					$comment->editCommentFromProfile($id_comm,$commentaire);
+				}
+			}
+			break;
+		case isset($_POST['deletecomm']):
+			$id_comm=$_POST['deletecomm'];
+			$comment=new comments($pdo);
+			$comment->deleteComment($id_comm);
 	endswitch;
 }
+
 
 ?>
 </header><br><br><br>
@@ -90,15 +131,16 @@ if(isset($_COOKIE['connected'])){
 	showDetails($row);
 	echo '</div>';
 	$commentsrow=$user->getComments($id);
+	//var_dump($commentsrow);
 	if($commentsrow!=null){
 	echo '<div id="mainprofile">';
-	showComments($commentsrow);
+	$comments=showComments($commentsrow);
+	echo $comments;
 	echo '</div>';
 	} else {	
 	echo '<div id="mainprofile">';
 	echo '</div>';
 	}
-
 } // remember header location if !isset 
 
 
@@ -120,7 +162,7 @@ if( testPost(isset($_POST['username']))&&
 			echo 'This user already exists.<br>Please, choose another username ';
 		} else {
 			echo '<span class="fakemodal">you\'ve succesfully updated your informations</span>';
-			header("Refresh:2; url=profil.php");
+			header('location:profil.php');
 		}
 }
 
@@ -131,62 +173,87 @@ echo '</div><br>';
 		<div class="blocksm">
 			<h2>write a new article here:</h2>
 			<form action="" method="post">
-			<button type="submit" name="write_article" value="send" id="write">write</button></form><br>
+			<button type="submit" name="write_article" value="send" id="write">write</button>
+			</form><br>
 <?php
 
 if(isset($_COOKIE['connected'])){
-	$id=$_COOKIE['connected'];
-	$row=$user->getRights($id);
-	if($row['nom']==='administrateur'||$row['nom']==='moderateur'){ 
-		if(isset($_POST['write_article'])||isset($_POST['create'])){
-			$form=1;
-			echo '<div class="fakemodaltext">';
-			if($form==1){
-				require_once 'creer-article.php';
-				$list=catList($categories,$create);
-				if( testPost(isset($_POST['sendarticle']))&&
-					testPost(isset($_POST['articletext']))&&
-					isset($_POST['categorieslist'])	){
-						$categories=new categories($pdo);
-						$articletext=$_POST['articletext'];
-						$id_utilisateur=$_COOKIE['connected'];
-						$id_categories=$categories->nomToNum($_POST['categorieslist']);
-						var_dump($user);
-						$article=$user->addArticleFromProfile($id_utilisateur,$id_categories,$articletext);
+	$id= $_COOKIE['connected'];
+	if(!empty($user)){
+		$row=$user->getRights(intval($id));
+		if($row['nom']==='administrateur'||$row['nom']==='moderateur'){ 
+			if(isset($_POST['write_article'])){
+				$form=1;
+				echo '<div class="fakemodaltext">';
+				if($form==1){
+					require_once 'creer-article.php';
+					$list=catList($categories,$create);
+					echo $list;
 				}
-				echo $list;
 			}
-			if(isset($_POST['close'])){
-				$form=0;
-				header('location:profil.php');
-			}
+		} else {
+			echo '<small>you need to be a moderator or administrator to write articles</small>';
+			echo '<style> #write{ background-color:var(--black); opacity:0.3; .fakemodal{ opacity:1;}</style>';
 		}
 	} else {
-		echo '<small>you need to be a moderator or administrator to write articles</small>';
-		echo '<style> #write{ background-color:var(--black); opacity:0.3; .fakemodal{ opacity:1;}}</style>';
+		header('Location:profil.php');
+	}
+}
+if( isset($_POST['articletext'])&&
+	isset($_POST['categorieslist'])&&
+	isset($_POST['sendarticle'])	){
+		$categories=new categories($pdo);
+		$articletext=$_POST['articletext'];
+		$id_utilisateur=$_COOKIE['connected'];
+		$id_categories=$_POST['categorieslist'];
+		$idcat=$categories->nomToNum($id_categories);
+		$user=$user->addArticle($id_utilisateur,$idcat,$articletext);
+}
+
+
+
+?>
+		</div>
+		<div class="blocksmart">
+<?php 
+
+echo '<div id="articleid"><h2>your latest articles</h2>';
+$article=new article($pdo);
+if(isset($_COOKIE['connected'])){
+	$id_user=$_COOKIE['connected'];
+	$articles=$article->getUserArticles($id_user);
+	if(!empty($articles)){
+		$x=count($articles);
+		echo $article=articleLayout(viewArticles($articles,$x));
+		echo '<small><i>total num of articles written by you: '.$x.'</i></small>';
+		echo articlesPages($x);
+		$categories=new categories($pdo);
+		$categories=$categories->getAllCategories();
+		echo '</div>';
+		showCatNav($categories);
+	} else {
+		echo '<h2> there are no articles yet</h2>';
+		echo '</div>';
 	}
 }
 
 ?>
 		</div>
-		<div class="blocksm">
-		<span><br></span>
+	</div>
+		<div class="admin">
+			<?php require_once 'administrateur.php'; ?>
 		</div>
 	</div>
-	<div class="admin">
-<?php require_once 'administrateur.php'; ?>
-	</div>
-	</div>
+	<br><br><br><br>
 	</main>
 </body>
 	<footer>
 		<div id="ourfooter">
-			<img src="./gitlogo.png" alt="gitlogoomar" width="40px" height="40px">
-			<div id="sub">
-					<div class="menuwrapper">
-						<a href="https://github.com/Giacomo-DeGrandi"> git G</a>
-						<a href="https://github.com/Omar-Diane"> git O</a>
-					</div>
+			<div id="logogit">
+				<img src="./gitlogo.png" alt="gitlogoomar" width="40px" height="40px" >
+				<div id="subfoot">
+					<a href="https://github.com/Omar-Diane">Omar</a>
+					<a href="https://github.com/Giacomo-DeGrandi">Giak</a>
 				</div>
 			</div>
 		</div>

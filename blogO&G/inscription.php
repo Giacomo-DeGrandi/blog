@@ -118,14 +118,24 @@ if(isset($_POST['connect'])||isset($_POST['password_conn'])){
 				}
 	}
 }
+if(isset($_COOKIE['form'])){		//layout
+	if($_COOKIE['form']==='login'){
+		echo '<br><br><br><br><br><br><br><br><br><br><br><br><br><br>';
+	} else { echo '<br><br><br><br><br><br><br><br><br><br>';}
+} 
 
 ?>
 	</main>
 </body>
 	<footer>
 		<div id="ourfooter">
-			<a href="https://github.com/Giacomo-DeGrandi"><img src="/pictures/githublogo.png"> git G</a>
-			<a href="https://github.com/Giacomo-DeGrandi">git O</a>
+			<div id="logogit">
+				<img src="gitlogo.png" alt="gitlogoomar" width="40px" height="40px" >
+				<div id="subfoot">
+					<a href="https://github.com/Omar-Diane">Omar</a>
+					<a href="https://github.com/Giacomo-DeGrandi">Giak</a>
+				</div>
+			</div>
 		</div>
 	</footer>
 </html>

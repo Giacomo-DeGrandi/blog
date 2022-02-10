@@ -81,15 +81,6 @@ if($_POST){
 					if($form==1){
 						require_once 'creer-article.php';
 						$list=catList($categories,$create);
-						if( testPost(isset($_POST['sendarticle']))&&
-							testPost(isset($_POST['articletext']))&&
-							isset($_POST['categorieslist'])	){
-								$articletext=$_POST['articletext'];
-								$id_utilisateur=$_COOKIE['connected'];
-								$id_categories=$categories->nomToNum($_POST['categorieslist']);
-								var_dump($user);
-								$article=$user->addArticleFromProfile($id_utilisateur,$id_categories,$articletext);
-						}
 						echo $list;
 					}
 					if(isset($_POST['close'])){
@@ -98,6 +89,19 @@ if($_POST){
 					}
 				}
 			}
+			exit();
+			break;			
+		case isset($_POST['articletext'])&&
+			 isset($_POST['categorieslist'])&&
+			 isset($_POST['sendarticle']):
+				$categories=new categories($pdo);
+				$user=new user($pdo);
+				$articletext=$_POST['articletext'];
+				$id_utilisateur=$_COOKIE['connected'];
+				$id_categories=$_POST['categorieslist'];
+				$idcat=$categories->nomToNum($id_categories);
+				$user=$user->addArticle($id_utilisateur,$idcat,$articletext);
+			break;
 		case isset($_POST['submitcomment']):
 				if(testPost($_POST['comment'])===true){
 					$commentaire=new comments($pdo);
@@ -110,18 +114,28 @@ if($_POST){
 	endswitch;
 }
 
+
 ?>
 </header><br><br><br>
 <body>
-	<main>
+	<main id="onearticmain">
 <?php
 
 
 echo '<div id="articlemain">';
 $article=new article($pdo);
-$id=$_GET['id'];
-$article=$article->getOneArticle($id);
+$id_article=$_GET['id'];
+$article=$article->getOneArticle($id_article);
 echo viewOneArticle($article);
+if(isset($_COOKIE['connected'])){
+	$id_user=$_COOKIE['connected'];
+}
+if(!empty($id_user)){
+	$row=$user->getRights($id_user);
+	if($row[0]['id']==$id_user){
+		echo '<form method="post"><input type="submit" name="editarticle" value="'.$id_article.'"/></form>';
+	}
+}
 $comments=new comments($pdo);
 $comments=$comments->getCommentsByArticle($id);
 echo '<span><br><br><br></span>'; // some space
@@ -140,13 +154,19 @@ $categories=$categories->getAllCategories();
 showCatNav($categories);
 echo '</div>';
 
+
 ?>
 	</main>
 </body>
 	<footer>
 		<div id="ourfooter">
-			<a href="https://github.com/Giacomo-DeGrandi"><img src="/pictures/githublogo.png"> git G</a>
-			<a href="https://github.com/Giacomo-DeGrandi">git O</a>
+			<div id="logogit">
+				<img src="gitlogo.png" alt="gitlogoomar" width="40px" height="40px" >
+				<div id="subfoot">
+					<a href="https://github.com/Omar-Diane">Omar</a>
+					<a href="https://github.com/Giacomo-DeGrandi">Giak</a>
+				</div>
+			</div>
 		</div>
 	</footer>
 </html>

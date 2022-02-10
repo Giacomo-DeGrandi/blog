@@ -2,12 +2,9 @@
 
 // funcsec _____
 
-function ctype_alnum_portable($text) {
-    return (preg_match('/^\p{L}+$/ui', $text) > 0);
-}
 
 function testPost ($post){
-	if(isset($post)&&!empty($post)&&ctype_alnum_portable($post)&&filter_var($post, FILTER_SANITIZE_STRING)){
+	if(isset($post)&&!empty($post)&&filter_var($post, FILTER_SANITIZE_STRING)){
 		return true;
 	} else {
 		return '<span>please insert a valid input and fill in all the fields</span>';
@@ -25,7 +22,7 @@ function rightHeader($cookie){
 			return $header;
 			break;
 		case 'utilisateur':
-			$header='<form action="profil.php" method="post"><input type="submit" name="compte" value="account"/></form>
+			$header='<form action="profil.php" method="post"><input type="submit" name="compte" value="profil"/></form>
 					 <form action="" method="post"><input type="submit" name="disconnect" value="disconnect"></input></form></div>';
 			return $header;
 			break;
@@ -83,34 +80,35 @@ function showUserForm(){
 
 
 function showComments($row){
-	echo '<div class="commentsprofile"><i>your latest comments:</i><br>';
+	$tmp= '<div class="commentsprofile"><i>your latest comments:</i><br>';
 	for ($i=0; $i <=isset($row[$i]); $i++) {
-		echo '<div>';
+		$tmp .= '<div>';
 		foreach($row[$i] as $k => $v){
-			echo '<div class="scrolldiv">';
+			$tmp .= '<div class="scrolldiv">';
 			if($k=='id_article'){
-				echo '<span>&#160;&#160;&#160;</span><small>on article n.<b>'.$v.'</b></small><span>&#160;&#160;&#160;&#160;</span>';
+				$tmp .= '<span>&#160;&#160;&#160;</span><small>on article n.<b>'.$v.'</b></small><span>&#160;&#160;&#160;&#160;</span>';
 			} elseif($k=='commentaire'){
-				echo '<small>your comment: '.$v.'</small>';
+				$tmp .= '<small>your comment: '.$v.'</small>';
 			}
-			echo '</div>';
+			$tmp .= '</div>';
 		}
-	echo '<button type="button" formmethod="post" name="edit" value="'.$row[$i]['id_article'].'" class="editbtn">edit</input>';
-	echo '<button type="button" formmethod="post" name="delete" value="'.$row[$i]['id_article'].'" class="deletebtn">delete</input>';
+	$tmp .= '<form action="" method="post"><button type="submit" name="editcomm" value="'.$row[$i]['id'].'" class="editbtn">edit</input></form>';
+	$tmp .= '<form action="" method="post"><button type="submit" name="deletecomm" value="'.$row[$i]['id'].'" class="deletebtn">delete</input></form>';
 
-	echo '</div>';
+	$tmp .= '</div>';
 	}
-	echo '</div>';
+	$tmp .= '</div>';
+	return $tmp.'</div>';
 }
 
 function catList($categories,$create){
-	$tmp='<i><small>chose a category: &#160; </small></i><input list="categories" id="cats" name="categorieslist"/><datalist id="categories">';
+	$tmp='<i><small>chose a category: &#160; </small></i><select id="categories" name="categorieslist">';
 	for($i=0;$i<=isset($categories[$i]);$i++){
-		$tmp .= '<option value="'.$categories[$i]['nom'].'">';
+		$tmp .= '<option value="'.$categories[$i]['nom'].'">'.$categories[$i]['nom'].'</option>';
 	}
-	$tmp = $tmp.'</datalist><br><br>';
+	$tmp = $tmp.'</select><br><br>';
 	$create=str_replace( "<span>insert data list here</span>", $tmp, $create);
-	return $create.'<form action="" method="post"><input type="submit" name="close" value="close" id="modifybtn"></input></form></div><style> #write{ background-color:var(--black); opacity:0.3; .fakemodal{ opacity:1;}}</style>';
+	return $create.'<form method="post"><input type="submit" name="close" value="close" id="modifybtn"></input></div></form>	<style> #write{ display:none;}.fakemodal{ opacity:1;} </style>';
 }
 
  // article controller__________
@@ -123,6 +121,7 @@ function textBeginning2($text){		//get just the beginning of the article as a ti
 	$text=substr($text,0,350);
 	return $text;
 }
+
 
 function viewAllArticles($article,$n){
 	$tmp='';
@@ -165,7 +164,7 @@ function articlesPages($count){
 			if($i==0){
 				$tmp.= '<form action="articles.php" method="get"><button type="submit" name="start" value="'.($i*5).'">newest articles</button></form>';
 			} else {
-				$tmp.= '<form action="articles.php" method="get"><button type="submit" name="start" value="'.($i*5).'">go to page '.$i.'</button></form>';
+				$tmp.= '<form action="articles.php" method="get"><button type="submit" name="start" value="'.($i*5).'">page '.$i.'</button></form>';
 			}
 		}
 		return $tmp;
@@ -185,7 +184,7 @@ function viewOneArticle($article){
 
 function viewArticles($article,$x){
 	$tmp='';
-	for($i=0;$i<=$x;$i++){
+	for($i=0;$i<$x;$i++){
 			$tmp .= '<div class="subart"><tr><td><h2>'.$article[$i]['login'].'</h2>
 			<h4><form action="articles.php" method="get"><button type="submit" name="categories" value="'.$article[$i]['nom'].'">'.$article[$i]['nom'].'</button></form><br></h4><i>'.$article[$i]['date'].'</i>
 			<div class="authorname">'.textBeginning($article[$i]['article']).'...</div>

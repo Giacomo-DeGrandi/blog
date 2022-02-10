@@ -11,16 +11,17 @@
 	--fandango: #B43E8F;
 	--webviolet: #EA7AF4;
 	--genshad: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+	--othershad: rgba(255, 255, 255, 0.2) 0px 0px 0px 1px inset, rgba(0, 0, 0, 0.9) 0px 0px 0px 1px;;
 }
 
 ::-moz-selection { /* Code for Firefox */
   color: var(--white);
-  background: var(--fandango);
+  background: var(--webviolet);
 }
 
 ::selection {
   color: var(--white);
-  background: var(--fandango);
+  background: var(--webviolet);
 }
 
 * {
@@ -34,6 +35,10 @@ hr {
 header {
 	display: flex;
 	justify-content: space-between;
+}
+
+body {
+		margin: 0px;
 }
 
 main {
@@ -94,21 +99,13 @@ p {
 }
 h2 {
 		font-family: var(--alice);
+			text-shadow: var(--genshad);
 }
 
-#ourfooter {
-	padding: 35px;
-	color: var(--white);
-	background-color: var(--black);
-	bottom: 0;
-}
-footer a{
-	text-decoration: none;
-	color: white;
-}
 
 .authorname{
 	font-family: var(--dispfont);
+	text-shadow: var(--othershad);
 	font-size: 5em;
 }
 .authorart{
@@ -161,6 +158,11 @@ footer a{
 	box-shadow: var(--genshad);
    flex: 2;
 }
+#onearticmain{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
 .fakemodal{
 	padding: 45px;
 	position: absolute;
@@ -191,7 +193,7 @@ footer a{
 	box-shadow: var(--genshad);
 	opacity: 1;
 }
-.fakemodaldelayed,.fakemodaltext2{
+.fakemodaldelayed,.fakemodaltext2 {
 	padding: 45px;
 	position: absolute;
 	font-size: 1.2em;
@@ -206,6 +208,21 @@ footer a{
 	box-shadow: var(--genshad);
 	opacity: 1;
 }
+.fakemodalcomm{
+	padding: 45px;
+	position: absolute;
+	font-size: 1.2em;
+	right: 35%;
+	top: 15%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	background-color: var(--white);
+	border-radius: 15px;
+	border:solid 1px white;
+	box-shadow: var(--genshad);
+	opacity: 1;	
+}
 .fakemodal small {
 	color: black;
 }
@@ -216,6 +233,10 @@ footer a{
 .blocksm {
 	box-shadow: var(--genshad);
 	flex: 2;
+}
+.blocksmart{
+	padding: 10px;
+	flex: 4;
 }
 .blocks td {
 	height: 15px;
@@ -267,12 +288,40 @@ display: flex;
 #menu {
 	position: relative;
 }
+#subfoot {
+	display: none;
+	color:var(--black);
+	height: 0px;
+}
+
+#logogit:hover #subfoot{
+	display: block;
+	transition: 1s;
+}
+#ourfooter {
+	padding: 18px;
+	color: var(--white);
+	background-color: var(--black);
+	justify-content: flex-end;
+	height: 50px;
+	bottom: 0;
+}
+footer a{
+	text-decoration: none;
+	color: white;
+	font-family: var(--genfont);
+}
+footer a:hover{
+	text-decoration: none;
+	color: var(--webviolet);
+	font-family: var(--genfont);
+}
 #sub {
 	padding: 1em;
 	display: none;
 	color:var(--black);
-
 }
+
 #menu:hover #sub{
 	display: block;
 	padding: 1.3em;
