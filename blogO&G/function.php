@@ -194,11 +194,11 @@ function viewArticles($article,$x){
 	return $tmp;
 }
 
-function articleLayout($article){
-	$article=str_replace( "<tr><td>", "<div class='artmain'><div class='blockart'>", $article);
-	$article=str_replace( "</td></tr>", "</div></div>", $article);
-	$article=str_replace( "authorname", "authorart", $article);
-	return $article;
+function articleLayout($thisart){
+	$thisart=str_replace( "<tr><td>", "<div class='artmain'><div class='blockart'>", $thisart);
+	$thisart=str_replace( "</td></tr>", "</div></div>", $thisart);
+	$thisart=str_replace( "authorname", "authorart", $thisart);
+	return $thisart;
 }
 
 // categories controller

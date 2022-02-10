@@ -77,7 +77,7 @@ if($_POST){
 				$id=$_COOKIE['connected'];
 				$row=$user->getRights($id);
 				if($row['nom']==='administrateur'||$row['nom']==='moderateur'){ 
-					echo '<div class="fakemodaltext2">';
+					echo '<div class="fakemodaltext">';
 					if($form==1){
 						require_once 'creer-article.php';
 						$list=catList($categories,$create);
@@ -135,9 +135,8 @@ if($_GET){
 		$articles=viewCatArticles($articlealias,$k,$cat);
 	}
 }
-
-$article=articleLayout($articles);
-echo $article;
+$newarticle=articleLayout($articles);
+echo $newarticle;
 echo '<small><i>total num of articles on this site: '.$count.'</i></small>';
 echo articlesPages($count);
 $categories=new categories($pdo);

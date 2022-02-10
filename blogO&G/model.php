@@ -19,16 +19,6 @@ class myDb{
 		//var_dump($conn);
 		return $conn;	
 	}
-
-	function selectQuery($sql,$values){
-		$conn=$this->conn;
-		$query = $sql;
-        $prepared = $conn->prepare($query);
-        $executed = $prepared->execute($values);
-        return $this->executed->fetchAll();
-
-	}
-
 }
 
 
@@ -74,6 +64,15 @@ class user {
         $prepared2 = $pdo->prepare($sql);
         $executed = $prepared2->execute([':id'=>$id,':login'=> $login ,':password'=> $password,':email'=> $email,':id_droits'=> $id_droits]);
         }
+	}
+
+	public function getAllInfo($id_user){
+		$pdo=$this->pdo;	//
+		$check= " SELECT * FROM utilisateurs WHERE id=:id ";
+		$prepared = $pdo->prepare($check);
+        $executed = $prepared->execute([':id'=> $id_user]);
+        $row = $prepared->fetch();
+		return $row;
 	}
 
 	public function connect($login,$password){
@@ -128,6 +127,11 @@ class user {
 			$prepared->execute([':article' => $articletext,':id_categorie' => $id_categories,':id_utilisateur' => $id_utilisateur, ':date' => $date ]); 
 		}
 		return $tmp;	
+	}
+	public function deleteUser($id){
+		$pdo=$this->pdo;
+		$prepared=$pdo->prepare(" DELETE FROM utilisateurs WHERE id=:id ");
+		$prepared->execute([':id'=> $id ]);
 	}
 }
 
@@ -190,7 +194,18 @@ class article {
 		$article = $prepared->fetchAll(PDO::FETCH_ASSOC);
 		return $article;
 
-	}													
+	}		
+	public function updateArticle($id_article,$edit){
+		$pdo=$this->pdo;
+		$sql = " UPDATE articles SET  article=:article WHERE id=:id ";
+        $prepared2 = $pdo->prepare($sql);
+        $executed = $prepared2->execute([':id'=>$id_article,':article'=>$edit]);
+	}
+	public function deleteArticle($id_article){
+		$pdo=$this->pdo;
+		$prepared=$pdo->prepare(" DELETE FROM articles WHERE id=:id ");
+		$prepared->execute([':id'=> $id_article ]);
+	}								
 }
 
 //class comments___________

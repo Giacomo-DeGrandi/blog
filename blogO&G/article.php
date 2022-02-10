@@ -77,11 +77,41 @@ if($_POST){
 				$id=$_COOKIE['connected'];
 				$row=$user->getRights($id);
 				if($row['nom']==='administrateur'||$row['nom']==='moderateur'){ 
-					echo '<div class="fakemodaltext2">';
+					echo '<div class="fakemodaltext">';
 					if($form==1){
 						require_once 'creer-article.php';
 						$list=catList($categories,$create);
 						echo $list;
+					}
+					if(isset($_POST['close'])){
+						$form=0;
+						header("Refresh:0");
+					}
+				}
+			}
+			exit();
+			break;
+		case isset($_POST['editarticle']):
+			$form=1;
+			$user=new user($pdo);
+			if(isset($_COOKIE['connected'])){
+				$id=$_COOKIE['connected'];
+				$row=$user->getRights($id);
+				if($row['nom']==='administrateur'||$row['nom']==='moderateur'){ 
+					echo '<div class="fakemodaltext">';
+					if($form==1){
+						require_once 'creer-article.php';
+						$editart=$create;
+						$editart=str_replace('<span>insert data list here</span>',' ',$editart);
+						$editart=str_replace('<h2>write here your article:</h2>','<h2>edit article here</h2>',$editart);
+						$editart=str_replace('articletext','articleedit',$editart);
+						$editart=str_replace('sendarticle','sendeditart',$editart);
+						$editart=str_replace('write','edit',$editart);
+						$id_article=$_GET['id'];
+						$article= new article($pdo);
+						$article=$article->getOneArticle($id_article);
+						$editart=str_replace('<textarea name="articleedit" rows="15" cols="60" >','<textarea name="articleedit" rows="15" cols="60" placeholder="'.$article[0]['article'].'"></textarea><br>',$editart);
+						echo $editart.'<form method="post"><input type="submit" name="close" value="close" id="modifybtn"></input></form>';
 					}
 					if(isset($_POST['close'])){
 						$form=0;
@@ -111,6 +141,25 @@ if($_POST){
 					$date = date("Y-m-d H:i:s");
 					$commentaire->addCommentsFromArt($comment,$id_user,$id_article,$date);
 				}
+		case isset($_POST['sendeditart']):
+			if(testPost(isset($_POST['articleedit']))===true){
+				$article=new article($pdo);
+				$id_article=$_GET['id'];
+				$edit=$_POST['articleedit'];
+				$article=$article->updateArticle($id_article,$edit);
+			}
+		case isset($_POST['deletearticle']):
+				echo '<span class="fakemodaltext2">are you sure you want to delete this Article?<br><form action="" method="post"><button type="submit" name="yes" id="modifybtn" value="'.$_POST['deletearticle'].'">yes, delete</button><button type="submit" name="close" value="close" id="modifybtn">no, go back</button></form>';
+				exit();
+				break;
+		case isset($_POST['yes']):
+				$id=$_POST['yes'];
+				$articlex=new article($pdo);
+				$articlex->deleteArticle($id);
+				header('location:index.php');
+				exit();
+				break;
+
 	endswitch;
 }
 
@@ -129,21 +178,25 @@ $article=$article->getOneArticle($id_article);
 echo viewOneArticle($article);
 if(isset($_COOKIE['connected'])){
 	$id_user=$_COOKIE['connected'];
+	$user=new user($pdo);
+	$user=$user->getRights($_COOKIE['connected']);
 }
 if(!empty($id_user)){
-	$row=$user->getRights($id_user);
-	if($row[0]['id']==$id_user){
-		echo '<form method="post"><input type="submit" name="editarticle" value="'.$id_article.'"/></form>';
+	if($article[0]['id']===$id_user||$user['nom']==='administrateur'){
+		echo '<form action="" method="post"><button type="submit" name="editarticle" value="'.$id_article.'">edit</button></form>';
+		echo '<form action="" method="post"><button type="submit" name="deletearticle" value="'.$id_article.'">delete</button></form>';
 	}
 }
 $comments=new comments($pdo);
-$comments=$comments->getCommentsByArticle($id);
+$comments=$comments->getCommentsByArticle($id_article);
 echo '<span><br><br><br></span>'; // some space
 echo '<div class="commentswrapper">';
 if(isset($_COOKIE['connected'])){
 	$cookie=$_COOKIE['connected'];
 } else { $cookie=null;}
+if(isset($_COOKIE['connected']) and $_COOKIE['connected']!==0){
 echo commentsForm($cookie);
+} else { echo '<span><small>log in to leave a comment</small></span>'; }
 if(!empty($comments)){
 echo showCommentsOnArticles($comments);
 echo '</div>';

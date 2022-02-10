@@ -40,6 +40,8 @@ if(!isset($_COOKIE['user'])){
 	echo rightHeader($row['nom']);
 }
 
+// routing POSTS________________________________________
+
 if($_POST){
 	switch($_POST):
 		case isset($_POST['home']):
@@ -124,10 +126,15 @@ if($_POST){
 	<div class="profile">
 <?php 
 
+// show profile_______________________________
+
 if(isset($_COOKIE['connected'])){
 	$id=$_COOKIE['connected'];
 	$row=$user->getRights($id);
 	echo '<div id="infoblock">';
+	if($row['nom']==='administrateur'){
+		echo '<a href="administrateur.php"> page administrateur </a><br>';
+	}
 	showDetails($row);
 	echo '</div>';
 	$commentsrow=$user->getComments($id);
@@ -139,10 +146,12 @@ if(isset($_COOKIE['connected'])){
 	echo '</div>';
 	} else {	
 	echo '<div id="mainprofile">';
+	echo '<h2> you haven\'t commented any article yet </h2>';
 	echo '</div>';
 	}
 } // remember header location if !isset 
 
+// update profile____________________
 
 if( testPost(isset($_POST['username']))&&
 	testPost(isset($_POST['password']))&&
@@ -177,12 +186,14 @@ echo '</div><br>';
 			</form><br>
 <?php
 
+// create or write_____________________________
+
 if(isset($_COOKIE['connected'])){
 	$id= $_COOKIE['connected'];
 	if(!empty($user)){
 		$row=$user->getRights(intval($id));
 		if($row['nom']==='administrateur'||$row['nom']==='moderateur'){ 
-			if(isset($_POST['write_article'])){
+			if(isset($_POST['write_article'])||isset($_POST['create'])){
 				$form=1;
 				echo '<div class="fakemodaltext">';
 				if($form==1){
@@ -217,6 +228,8 @@ if( isset($_POST['articletext'])&&
 		<div class="blocksmart">
 <?php 
 
+//article views__________________________________
+
 echo '<div id="articleid"><h2>your latest articles</h2>';
 $article=new article($pdo);
 if(isset($_COOKIE['connected'])){
@@ -241,7 +254,6 @@ if(isset($_COOKIE['connected'])){
 		</div>
 	</div>
 		<div class="admin">
-			<?php require_once 'administrateur.php'; ?>
 		</div>
 	</div>
 	<br><br><br><br>
