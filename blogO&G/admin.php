@@ -33,7 +33,7 @@ if(isset($_POST['envoyer'])){
     #Nous allons reproduire le même système, vérifier si on reçois les variables post de titre et de contenu. 
     #Si c’est le cas, nous allons lancer les fonctions qui ajoutent l’article à la base de donnée et 
     #afficher un message comme quoi l’article as bien été enregistré
-    #Ici onécrit le code que l'administrateur verras
+    #Ici on écrit le code que l'administrateur verras
  {  # Dans cette partie, on écrit le code que l'utilisateur administrateur verras
     ?>
  
@@ -73,6 +73,37 @@ if(isset($_POST['envoyer'])){
     ?>
     <a href="bannir.php?id=<?= $user['id']; ?>" style="color:red;
     text-decoration: none;">Bannir le membre</a> 
+
+
+  <?php
+//MAINTENANT ON PASSE A LA MODIFICATION DE L'UTILISATEUR
+if(!empty($_POST['login'])and
+!empty($_POST['password'])and
+!empty($_POST['email'])and
+!empty($_POST['id'])){
+
+    if(isset($_POST['submit'])){
+     $login = $_POST['login'];
+     $password = $_POST['password'];
+     $email = $_POST['email'];
+     $id = $_POST['id'];
+     $updateutil = $conn -> prepare("UPDATE utilisateurs SET login='$login', password='$password', email='$email' WHERE id='$id'");
+     $updateutil = $conn -> execute(array($login, $password, $email));
+     header('location: admin.php');
+
+    }
+}
+?>
+<form class="box" action="" method="post">
+    <h1 class="box-title">Update user</h1>
+    <input type="text" name="login" placeholder="Login" required />
+    <input type="password" name="password" placeholder="Mot de passe" required />
+    <input type="text" name="email" placeholder="Email" required />  
+      <h2>Choisir un id pour changer les informations de l'utilisateur</h2>
+      <input type="text" name="id" placeholder="Choisis un id">
+      <input type="submit" name="submit" value="Modifier" />
+  </form>
+
 
 <?php
 }
