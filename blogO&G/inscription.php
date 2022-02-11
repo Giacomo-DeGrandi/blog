@@ -95,7 +95,7 @@ if( testPost(isset($_POST['username']))&&
 		if($user===false){
 			echo 'This user already exists.<br>Please, choose another username or log in <br> to get access to your account';
 		} else {
-			echo '<span class="fakemodal">Thanks! You\'re subscription is complete, you\'ll be redirected to the login page.</span>';
+			echo '<span class="fakemodaltext">Thanks! You\'re subscription is complete, you\'ll be redirected to the login page.</span>';
 			setcookie('form','login', time() +36000);
 			header( "refresh:2;url=inscription.php" );
 		}

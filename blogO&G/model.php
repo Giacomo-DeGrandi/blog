@@ -284,6 +284,23 @@ class categories {
 		$id_categories=$id_categories[0]['id'];
 		return $id_categories;		
 	}
+	function editCatById($id_cat,$nom_edit){
+		$pdo=$this->pdo;
+		$id=$id_cat;
+		$nom=$nom_edit;
+		$prepared=$pdo->prepare(" UPDATE categories SET nom=:nom WHERE id=:id ");
+		$prepared->execute([':nom'=> $nom,':id'=> $id ]);
+		return true;			
+	}
+	function deleteCat($id_cat){
+		$pdo=$this->pdo;
+		$prepared=$pdo->prepare(" DELETE FROM categories WHERE id=:id ");
+		$prepared->execute([':id'=> $id_cat ]);			
+	}
+	function addCatName($cat){
+		$pdo=$this->pdo;
+		$sql = " INSERT INTO categories(nom) VALUES (:nom) ";
+        $prepared = $pdo->prepare($sql);
+        $executed = $prepared->execute([':nom'=> $cat ]);	
+	}
 }
-
-

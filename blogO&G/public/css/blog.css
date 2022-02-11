@@ -397,3 +397,12 @@ footer a:hover{
 	box-shadow: var(--genshad);
 }
 
+#useradmin {
+	max-height: 800px;
+	overflow: scroll;
+	-ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */	
+}
+#useradmin::-webkit-scrollbar {
+  display: none;
+}

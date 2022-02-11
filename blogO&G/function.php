@@ -42,6 +42,7 @@ function rightForm($sess){
 		switch ($sess){
 			case 'subscribe':
 				require_once 'inscription_form.php';
+				$subscribeform=str_replace('replaceme',' ',$subscribeform);
 				return $subscribeform;
 			case 'login':
 				require_once 'login_form.php';

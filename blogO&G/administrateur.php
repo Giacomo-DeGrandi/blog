@@ -21,7 +21,7 @@ require_once 'config/config.php';
 $mydb=new myDb($server,$username,$password,$database);
 $pdo=$mydb->getConn();
 
-//menu___
+//menu______________________________________
 
 $categories=new categories($pdo);
 $categories=$categories->getAllCategories();
@@ -31,6 +31,7 @@ $menu=str_replace( "<span>categories</span>", $forms, $menu);
 echo $menu;	// print my menu
 $user= new user($pdo);
 
+//header____________________________________
 if(!isset($_COOKIE['user'])){
 	$sess=null;
 	echo rightHeader($sess);
@@ -40,6 +41,7 @@ if(!isset($_COOKIE['user'])){
 	echo rightHeader($row['nom']);
 }
 
+// post router___________________________________
 if($_POST){
 	switch($_POST):
 		case isset($_POST['home']):
@@ -134,23 +136,88 @@ if($_POST){
 <?php
 
 
-//AFFICHAGE DES MEMBRES, SUPPRESION DES MEMBRES
+//AFFICHAGE DES MEMBRES, SUPPRESION DES MEMBRES_______________
 
 $conn=$mydb->getConn();
 $recupUsers = $conn -> query('SELECT * FROM utilisateurs') ;
 while ($user = $recupUsers -> fetch()){
 	   // var_dump($user);
-	echo '<div>';
-    echo '<span><h3> username: '.$user['login'].'</h3>&#160;</span>';
-    echo '<span> id: '.$user['id'].'&#160;</span>';
-    echo '<span> droits: '.$user['id_droits'].'&#160;</span>';
-    echo '<span> droits: '.$user['email'].'&#160;</span>';	
-    echo '<form method="post"><button type="submit" name="edit_user" id="modifybtn" value="'.$user['id'].'">edit</button><button type="submit" name="delete_user" id="modifybtn" value="'.$user['id'].'">delete</input></form>';
-    echo '</div>';
+	$tmp = '<div id="useradmin">';
+    $tmp .='<span><h3> username: '.$user['login'].'</h3>&#160;</span>';
+    $tmp .= '<span> id: '.$user['id'].'&#160;</span>';
+    $tmp .= '<span> droits: '.$user['id_droits'].'&#160;</span>';
+    $tmp .= '<span> droits: '.$user['email'].'&#160;</span>';	
+    $tmp .= '<form method="post"><button type="submit" name="edit_user" id="modifybtn" value="'.$user['id'].'">edit</button><button type="submit" name="delete_user" id="modifybtn" value="'.$user['id'].'">delete</button></form>';
+    $tmp .= '</div>';
+    echo $tmp;
+}
+
+
+// add , delete , erase categories______________________________________
+$add= '';
+$add .= '<div>';
+$add .= '<h2>edit categories here:</h2>';
+$add .= '<form method="post"><button type="submit" name="edit_categories" id="modifybtn" value="editcateg">edit</button></form><br>';
+
+echo $add;
+
+if(isset($_POST['edit_categories'])){
+	$cat=''; //temp to echo just variables and not raw html, should be kind of more safe ...
+	$categories=new categories($pdo);
+	$categories=$categories->getAllCategories();
+	for($i=0;$i<=isset($categories[$i]);$i++){
+		$cat.= '<span><b>'.$categories[$i]['nom'].'</b></span> <i>'.$categories[$i]['id'].'</i><br>';
+		$cat.= '<form method="post"><button type="submit" name="edit_cat" id="modifybtn" value="'.$categories[$i]['id'].'">edit</button><button type="submit" name="delete_cat" id="modifybtn" value="'.$categories[$i]['id'].'">delete</button></form>';
+	}
+	$cat .= '<form method="post"><button type="submit" name="close" value="close" id="modifybtn">close edit categories</button></form><br>';
+	$cat .= '<form method="post"><button type="submit" name="add_cat" value="add" id="modifybtn">ADD NEW CATEGORY</button></form>';
+	echo $cat;
+}
+if(isset($_POST['edit_cat'])){
+	$edcat= '<div class="fakemodal"><form method="post">';
+	$edcat.= '<input type="text" name="categoriesname" placeholder="category"/><br><br>';
+	$edcat.='<button type="submit" name="edit_cat_choice" id="modifybtn" value="'.$_POST['edit_cat'].'">edit</button>';
+	echo $edcat;
+}
+if(isset($_POST['edit_cat_choice'])){
+	if(isset($_POST['categoriesname'])){
+		if(testPost($_POST['categoriesname'])===true){
+			$nom_edit=$_POST['categoriesname'];
+			$id_cat=$_POST['edit_cat_choice'];
+			$categories=new categories($pdo);
+			$categories=$categories->editCatById($id_cat,$nom_edit);
+		}
+	}
+}
+
+//delete __________________
+if(isset($_POST['delete_cat'])){
+	echo '<span class="fakemodaltext2">are you sure you want to delete this category?<br><form action="administrateur.php" method="post"><button type="submit" name="yesdelcat" id="modifybtn" value="'.$_POST['delete_cat'].'">yes, delete</button><button type="submit" name="close" value="close" id="modifybtn">no, go back</button></form>';
+}
+if(isset($_POST['yesdelcat'])){
+	$categories=new categories($pdo);
+	$categories->deleteCat($_POST['yesdelcat']);
+}
+//add____________________
+if(isset($_POST['add_cat'])){
+	$addcat= '<div class="fakemodal"><form method="post">';
+	$addcat.= '<input type="text" name="addcategoriesname" placeholder="new_category"/><br><br>';
+	$addcat.='<button type="submit" name="add_cat_btn" id="modifybtn" value="addme">add</button>';
+	$addcat.= '<button type="submit" name="close" value="close" id="modifybtn">no, go back</button></form>';
+	echo $addcat;	
+}
+if(isset($_POST['add_cat_btn'])){
+	if(isset($_POST['addcategoriesname'])){
+		if(testPost($_POST['addcategoriesname'])===true){
+			$categories=new categories($pdo);
+			$categories->addCatName($_POST['addcategoriesname']);
+		}
+	}
 }
 
 
 ?>
+</main>
 </body>
 	<footer>
 		<div id="ourfooter">
