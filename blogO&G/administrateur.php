@@ -190,6 +190,7 @@ $userbasediv='</div>';
 echo $userbasediv;
 
 
+
 // add , delete , erase categories______________________________________
 $add= '';
 $add .= '<div>';
@@ -256,6 +257,12 @@ if(isset($_POST['add_cat_btn'])){
 
 echo '</div>'; //catdiv
 echo '<br><br>';
+
+
+
+
+// articles_______________
+
 echo '<div id="adminarticles">';
 echo '<table>';
 $article=new article($pdo);

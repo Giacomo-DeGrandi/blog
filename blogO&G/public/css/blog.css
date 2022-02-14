@@ -161,6 +161,8 @@ background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' hei
 }
 
 #adminarticles{
+	height: 500px;
+	overflow-y: scroll;
 	display: flex; 
 	flex-direction: column;
 	text-align: center;

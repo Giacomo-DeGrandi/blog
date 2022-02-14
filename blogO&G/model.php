@@ -326,7 +326,12 @@ class categories {
 	}
 	function deleteCat($id_cat){
 		$pdo=$this->pdo;
-		$prepared=$pdo->prepare(" DELETE FROM categories WHERE id=:id ");
+		$prepared=$pdo->prepare("   DELETE FROM categories WHERE id=:id ;
+									DELETE commentaires
+									FROM commentaires
+								  	INNER JOIN articles ON articles.id = commentaires.id_article
+								    WHERE id_categorie=:id ;
+								    DELETE FROM articles WHERE id_categorie=:id ; ");
 		$prepared->execute([':id'=> $id_cat ]);			
 	}
 	function addCatName($cat){
@@ -335,4 +340,36 @@ class categories {
         $prepared = $pdo->prepare($sql);
         $executed = $prepared->execute([':nom'=> $cat ]);	
 	}
+}
+
+class rights {
+	public $id, $nom, $pdo;
+
+	function __construct($pdo){
+		$this->pdo=$pdo;
+		$pdo=$this->pdo;
+		return $pdo;
+	}
+	function editRights($id_right,$nom_edit){
+		$pdo=$this->pdo;
+		$id=$id_right;
+		$nom=$nom_edit;
+		$prepared=$pdo->prepare(" UPDATE droits SET nom=:nom WHERE id=:id ");
+		$prepared->execute([':nom'=> $nom,':id'=> $id ]);
+		return true;			
+	}
+	function addCatName($right_nom){
+		$pdo=$this->pdo;
+		$sql = " INSERT INTO droits(nom) VALUES (:nom) ";
+        $prepared = $pdo->prepare($sql);
+        $executed = $prepared->execute([':nom'=> $right_nom ]);	
+	}
+	function deleteCat($id_cat){
+		$pdo=$this->pdo;
+		//$prepared=$pdo->prepare("   DELETE FROM droits WHERE id=:id ;
+							//		UPDATE utilisateur SET  ");
+		//$prepared->execute([':id'=> $id_cat ]);			
+	}
+
+
 }
