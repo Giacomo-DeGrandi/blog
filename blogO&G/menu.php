@@ -14,7 +14,7 @@ ob_start();
 						<span>categories</span>
 					</div>
 					<form action="articles.php" method="get">
-						<button type="submit" name="articles" value="articles"><b>all articles</b></button>
+						<button type="submit" name="articles" value="articles"><b>all articles</b></button> 
 					</form>
 				</div>
 			</div>

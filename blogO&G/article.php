@@ -192,7 +192,7 @@ if(!empty($id_user)){
 		echo '<form action="" method="post"><button type="submit" name="deletearticle" value="'.$id_article.'">delete</button></form>';
 	}
 }
-$comments=new comments($pdo);
+$comments=new comments($pdo); 
 $comments=$comments->getCommentsByArticle($id_article);
 echo '<span><br><br><br></span>'; // some space
 echo '<div class="commentswrapper">';

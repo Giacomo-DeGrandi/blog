@@ -183,7 +183,7 @@ class article {
 									  ON articles.id_categorie = categories.id 
 									  ORDER BY articles.date DESC");	
 		$executed=$prepared->execute();
-		$row = $prepared->fetchAll();
+		$row = $prepared->fetchAll(); 
 		return $row; 
 	}
 

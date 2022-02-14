@@ -243,7 +243,7 @@ if(isset($_POST['add_cat'])){
 	$addcat.='<button type="submit" name="add_cat_btn" id="modifybtn" value="addme">add</button>';
 	$addcat.= '<button type="submit" name="close" value="close" id="modifybtn">no, go back</button></form>';
 	echo $addcat;	
-}
+} 
 if(isset($_POST['add_cat_btn'])){
 	if(isset($_POST['addcategoriesname'])){
 		if(testPost($_POST['addcategoriesname'])===true){

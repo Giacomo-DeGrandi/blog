@@ -10,4 +10,4 @@ ob_start();
 </form>
 <?php 
 
-$loginform=ob_get_clean();
+$loginform=ob_get_clean(); 

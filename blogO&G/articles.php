@@ -136,7 +136,7 @@ if(isset($_GET['categories'])){
 		$cat=$_GET['categories'];	
 		$articles=viewCatArticles($articlealias,$cat);
 }
-$newarticle=articleLayout($articles);
+$newarticle=articleLayout($articles); 
 echo $newarticle;
 echo '</table><br><br>';
 echo '<div id="subpagearticles">';

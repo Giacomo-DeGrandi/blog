@@ -10,6 +10,6 @@ ob_start();
 	<input type="password" name="passwordconf" placeholder="confirm_password" required><br><br>
 	<input type="submit" name="send" placeholder="send" value="send" required><br><br>	
 </form>
-<?php 
+<?php  
 
 $subscribeform=ob_get_clean();

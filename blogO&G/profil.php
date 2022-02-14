@@ -224,10 +224,10 @@ if( isset($_POST['articletext'])&&
 }
 
 
-
+ 
 ?>
 		</div>
-		<div class="blocksmart">
+		<div class="blocksmart"> 
 <?php 
 
 //article views__________________________________

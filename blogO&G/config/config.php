@@ -5,3 +5,4 @@ $username = "root";
 $password = "";
 $database = "blog";
 
+ 

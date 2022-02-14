@@ -142,7 +142,7 @@ function viewAllArticles($article,$n){
 }
 
 function viewTotalArticles($article){
-	$tmp='';
+	$tmp=''; 
 	for($i=0;$i<=isset($article[$i]);$i++){
 		if(isset($article[$i])){
 			$tmp .= '<tr><td><h2><div class="subart">'.textBeginning($article[$i]['article']).'...</h2>
