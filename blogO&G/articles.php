@@ -95,7 +95,7 @@ if($_POST){
 			 isset($_POST['sendarticle']):
 				$categories=new categories($pdo);
 				$user=new user($pdo);
-				$articletext=$_POST['articletext'];
+				$articletext=htmlspecialchars($_POST['articletext']);
 				$id_utilisateur=$_COOKIE['connected'];
 				$id_categories=$_POST['categorieslist'];
 				$idcat=$categories->nomToNum($id_categories);
@@ -108,12 +108,13 @@ if($_POST){
 ?>
 </header><br><br><br>
 <body>
-	<main>
+	<main id="articlesmainlayout">
 <?php
 
 
 
-echo '<div id="articleid">';
+//echo '<div id="articleid">';
+echo '<table>';
 $article=new article($pdo);
 $count=$article->totalNum();
 $articles=$article->getAllArticles();
@@ -129,20 +130,22 @@ if($_GET){
 			$articles=viewAllArticles($articles,$k);
 			break;
 	endswitch;
-	if(isset($_GET['categories'])){
+}
+if(isset($_GET['categories'])){
 		$k=0;
 		$cat=$_GET['categories'];	
-		$articles=viewCatArticles($articlealias,$k,$cat);
-	}
+		$articles=viewCatArticles($articlealias,$cat);
 }
 $newarticle=articleLayout($articles);
 echo $newarticle;
+echo '</table><br><br>';
+echo '<div id="subpagearticles">';
 echo '<small><i>total num of articles on this site: '.$count.'</i></small>';
-echo articlesPages($count);
+echo articlesPages($count);	
 $categories=new categories($pdo);
 $categories=$categories->getAllCategories();
-echo '</div>';
 showCatNav($categories);
+echo '</div><br><br>';	//subpagearticle______
 
 ?>
 	</main>

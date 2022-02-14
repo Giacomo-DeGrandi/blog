@@ -87,9 +87,10 @@ if( testPost(isset($_POST['username']))&&
 	testPost(isset($_POST['passwordconf']))&&
 	testPost($_POST['password'])===testPost($_POST['passwordconf'])&&
 	(isset($_POST['send'])) ){
-			$login=$_POST['username'];
-			$password=$_POST['password'];
-			$email=$_POST['email'];
+			$_POST['passwordconf']=htmlspecialchars($_POST['passwordconf']);
+			$login=htmlspecialchars($_POST['username']);
+			$password=htmlspecialchars($_POST['password']);
+			$email=htmlspecialchars($_POST['email']);
 			$id_droits=1; //int cause in bd int id
 			$user=$user->subscribeUser($login,$password,$email,$id_droits);
 		if($user===false){
@@ -105,11 +106,11 @@ if( testPost(isset($_POST['username']))&&
 if(isset($_POST['connect'])||isset($_POST['password_conn'])){ 
 	if( testPost(isset($_POST['connect']))&&
 		testPost(isset($_POST['password_conn']))){
-				$login=$_POST['connect'];
-				$password=$_POST['password_conn'];
+				$login=htmlspecialchars($_POST['connect']);
+				$password=htmlspecialchars($_POST['password_conn']);
 				$row=$user->connect($login,$password,$user);
 				if(!empty($row)){
-					echo '<span class="fakemodal">succesfully connected. Hi <b>'.$login.'<b></span>';
+					echo '<span class="fakemodal">succesfully connected.<br> Hi <b>'.$login.'<b></span>';
 					setcookie('user','user', time() +36000);	
 					setcookie('connected',$row['id'], time() +36000);				
 					header( "refresh:1.5;url=profil.php" );

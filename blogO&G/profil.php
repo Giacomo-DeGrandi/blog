@@ -143,7 +143,7 @@ if(isset($_COOKIE['connected'])){
 	echo '<div id="mainprofile">';
 	$comments=showComments($commentsrow);
 	echo $comments;
-	echo '</div>';
+	echo '<br><br></div>';
 	} else {	
 	echo '<div id="mainprofile">';
 	echo '<h2> you haven\'t commented any article yet </h2>';
@@ -160,10 +160,11 @@ if( testPost(isset($_POST['username']))&&
 	testPost(isset($_POST['passwordconf']))&&
 	testPost($_POST['password'])===testPost($_POST['passwordconf'])&&
 	(isset($_POST['send'])) ){
+			$_POST['passwordconf']=htmlspecialchars($_POST['passwordconf']);
 			$id=$_COOKIE['connected'];
-			$login=$_POST['username'];
-			$password=$_POST['password'];
-			$email=$_POST['email'];
+			$login=htmlspecialchars($_POST['username']);
+			$password=htmlspecialchars($_POST['password']);
+			$email=htmlspecialchars($_POST['email']);
 			$row=$user->getRights($id);
 			$id_droits=$row['id_droits']; //int cause in bd int id
 			$user=$user->updateUser($login,$password,$email,$id_droits,$id);
@@ -211,10 +212,11 @@ if(isset($_COOKIE['connected'])){
 	}
 }
 if( isset($_POST['articletext'])&&
+	testPost($_POST['articletext'])===true&&
 	isset($_POST['categorieslist'])&&
 	isset($_POST['sendarticle'])	){
 		$categories=new categories($pdo);
-		$articletext=$_POST['articletext'];
+		$articletext=htmlspecialchars($_POST['articletext']);
 		$id_utilisateur=$_COOKIE['connected'];
 		$id_categories=$_POST['categorieslist'];
 		$idcat=$categories->nomToNum($id_categories);
@@ -238,11 +240,11 @@ if(isset($_COOKIE['connected'])){
 	if(!empty($articles)){
 		$x=count($articles);
 		echo $article=articleLayout(viewArticles($articles,$x));
-		echo '<small><i>total num of articles written by you: '.$x.'</i></small>';
+		echo '<small><br><br><i>total num of articles written by you: '.$x.'</i><br><br></small>';
 		echo articlesPages($x);
 		$categories=new categories($pdo);
 		$categories=$categories->getAllCategories();
-		echo '</div>';
+		echo '<br></div><span><br></span>';
 		showCatNav($categories);
 	} else {
 		echo '<h2> there are no articles yet</h2>';

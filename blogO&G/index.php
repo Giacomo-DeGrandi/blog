@@ -35,7 +35,10 @@ if(!isset($_COOKIE['user'])){
 	$sess=null;
 	echo rightHeader($sess);
 } else {
-	echo rightHeader($_COOKIE['user']);
+	$user=new user($pdo);		// get my user
+	$id=$_COOKIE['connected'];
+	$row=$user->getRights($id);
+	echo rightHeader($row['nom']);
 }
 
 
@@ -82,11 +85,12 @@ if($_POST){
 			break;
 
 		case isset($_POST['articletext'])&&
+			 testPost($_POST['articletext'])===true&&
 			 isset($_POST['categorieslist'])&&
 			 isset($_POST['sendarticle']):
 				$categories=new categories($pdo);
 				$user=new user($pdo);
-				$articletext=$_POST['articletext'];
+				$articletext=htmlspecialchars($_POST['articletext']);
 				$id_utilisateur=$_COOKIE['connected'];
 				$id_categories=$_POST['categorieslist'];
 				$idcat=$categories->nomToNum($id_categories);
@@ -99,21 +103,22 @@ if($_POST){
 ?>
 </header><br><br><br>
 <body>
-	<main>
+	<main id="indexmain">
 <?php
 
 $article=new article($pdo);
 $articles=$article->getAllArticles();
-echo '<table>';
+echo '<table id="indexarttable">';
 $table=viewArticles($articles,3);
 echo $table;
 echo '</table>';
 $count=$article->totalNum();
-echo '<small><i>total num of articles on this site: '.$count.'</i></small>';
+echo '<br><br><small><i>total num of articles on this site: '.$count.'</i></small>';
 echo articlesPages($count);
-$categories=new categories($pdo);
+$categories=new categories($pdo); 
 $categories=$categories->getAllCategories();
 showCatNav($categories);
+echo '<br><br>';
 
 ?>
 	</main>

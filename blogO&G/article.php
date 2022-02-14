@@ -110,7 +110,7 @@ if($_POST){
 						$id_article=$_GET['id'];
 						$article= new article($pdo);
 						$article=$article->getOneArticle($id_article);
-						$editart=str_replace('<textarea name="articleedit" rows="15" cols="60" >','<textarea name="articleedit" rows="15" cols="60" placeholder="'.$article[0]['article'].'"></textarea><br>',$editart);
+						$editart=str_replace('<textarea name="articleedit" rows="15" cols="60" >','<textarea name="articleedit" rows="15" cols="60" placeholder="'.$article[0]['article'].'">'.$article[0]['article'].'</textarea><br>',$editart);
 						echo $editart.'<form method="post"><input type="submit" name="close" value="close" id="modifybtn"></input></form>';
 					}
 					if(isset($_POST['close'])){
@@ -126,7 +126,7 @@ if($_POST){
 			 isset($_POST['sendarticle']):
 				$categories=new categories($pdo);
 				$user=new user($pdo);
-				$articletext=$_POST['articletext'];
+				$articletext=htmlspecialchars($_POST['articletext']);
 				$id_utilisateur=$_COOKIE['connected'];
 				$id_categories=$_POST['categorieslist'];
 				$idcat=$categories->nomToNum($id_categories);
@@ -137,26 +137,31 @@ if($_POST){
 					$commentaire=new comments($pdo);
 					$id_article=$_GET['id'];
 					$id_user=$_COOKIE['connected'];
-					$comment=$_POST['comment'];
+					$comment=htmlspecialchars($_POST['comment']);
 					$date = date("Y-m-d H:i:s");
 					$commentaire->addCommentsFromArt($comment,$id_user,$id_article,$date);
 				}
+			break;
 		case isset($_POST['sendeditart']):
 			if(testPost(isset($_POST['articleedit']))===true){
 				$article=new article($pdo);
 				$id_article=$_GET['id'];
-				$edit=$_POST['articleedit'];
+				$edit=htmlspecialchars($_POST['articleedit']);
 				$article=$article->updateArticle($id_article,$edit);
 			}
+			break;
 		case isset($_POST['deletearticle']):
 				echo '<span class="fakemodaltext2">are you sure you want to delete this Article?<br><form action="" method="post"><button type="submit" name="yes" id="modifybtn" value="'.$_POST['deletearticle'].'">yes, delete</button><button type="submit" name="close" value="close" id="modifybtn">no, go back</button></form>';
 				exit();
 				break;
 		case isset($_POST['yes']):
 				$id=$_POST['yes'];
-				$articlex=new article($pdo);
-				$articlex->deleteArticle($id);
-				header('location:index.php');
+				$articlenow=new article($pdo);
+				$articlenow->deleteArticle($_POST['yes']);
+				setcookie('connected',$row['id'], -1);	
+				setcookie('user', $row['nom'], time() +36000);
+				session_destroy();
+				header('location: index.php');
 				exit();
 				break;
 
@@ -196,21 +201,21 @@ if(isset($_COOKIE['connected'])){
 } else { $cookie=null;}
 if(isset($_COOKIE['connected']) and $_COOKIE['connected']!==0){
 echo commentsForm($cookie);
-} else { echo '<span><small>log in to leave a comment</small></span>'; }
+} else { echo '<br><span><small>log in to leave a comment</small></span>'; }
 if(!empty($comments)){
 echo showCommentsOnArticles($comments);
-echo '</div>';
+echo '</div><br><br>';
 }
-echo '</div>';
+echo '</div><br><br>';
 $categories=new categories($pdo);
 $categories=$categories->getAllCategories();
 showCatNav($categories);
-echo '</div>';
+echo '<br><br></div>';
 
 
 ?>
 	</main>
-</body>
+</body><br><br>
 	<footer>
 		<div id="ourfooter">
 			<div id="logogit">

@@ -74,7 +74,7 @@ if($_POST){
 					$form=str_replace('<input type="password" name="password" placeholder="password" required><br><br>',' ', $form);
 					$form=str_replace('<input type="password" name="passwordconf" placeholder="confirm_password" required><br><br>','<input type="text" name="droits" placeholder="'.$user['id_droits'].'" required><br><br>',$form);
 					$form=str_replace('placeholder="username"','placeholder="'.$user['login'].'"', $form);
-					$form=str_replace('<input type="submit" name="send" placeholder="send" value="send" required><br><br>', '<button type="submit" name="send" placeholder="send" value="'.$user['id'].'" required>edit user</button><br><br>', $form);
+					$form=str_replace('<input type="submit" name="send" placeholder="send" value="send" required><br><br>', '<button type="submit" name="sendx" value="'.$user['id'].'" required>edit user</button><br><br>', $form);
 					echo $form;
 					echo '</div>';
 				}
@@ -84,18 +84,19 @@ if($_POST){
 				}
 				exit();
 				break;
-		case isset($_POST['send']):
+		case isset($_POST['sendx']):
 				if( testPost(isset($_POST['username']))&&
 					isset($_POST['email'])&&
 					filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)&&
 					testPost(isset($_POST['droits'])) ){
-							$login=$_POST['username'];
-							$droits=$_POST['droits'];
-							$email=$_POST['email'];
+							$login=htmlspecialchars($_POST['username']);
+							$droits=htmlspecialchars($_POST['droits']);
+							$email=htmlspecialchars($_POST['email']);
+							$id=$_POST['sendx'];
 							$userpw=$user->getAllInfo($id);
 							$password=$userpw['password'];
-							$id=$_POST['send'];
-							$user=$user->updateUser($login,$password,$email,$droits,$id);
+							$current=$id;
+							$user=$user->updateAdmin($login,$password,$email,$droits,$id,$current);
 						if($user===false){
 							echo '<span class="fakemodal">This user already exists.<br>Please, choose another username</span>';
 							header('location:administrateur.php');
@@ -116,7 +117,39 @@ if($_POST){
 				header('location:administrateur.php');
 				exit();
 				break;
+		case isset($_POST['create']):
+			$form=1;
+			$user=new user($pdo);
+			if(isset($_COOKIE['connected'])){
+				$id=$_COOKIE['connected'];
+				$row=$user->getRights($id);
+				if($row['nom']==='administrateur'||$row['nom']==='moderateur'){ 
+					echo '<div class="fakemodaltext">';
+					if($form==1){
+						require_once 'creer-article.php';
+						$list=catList($categories,$create);
+						echo $list;
+					}
+					if(isset($_POST['close'])){
+						$form=0;
+						header("Refresh:0");
+					}
+				}
+			}
+			break;
 	endswitch;
+}
+
+if( isset($_POST['articletext'])&&
+	testPost($_POST['articletext'])===true&&
+	isset($_POST['categorieslist'])&&
+	isset($_POST['sendarticle'])	){
+		$categories=new categories($pdo);
+		$articletext=htmlspecialchars($_POST['articletext']);
+		$id_utilisateur=$_COOKIE['connected'];
+		$id_categories=$_POST['categorieslist'];
+		$idcat=$categories->nomToNum($id_categories);
+		$user=$user->addArticle($id_utilisateur,$idcat,$articletext);
 }
 
 
@@ -140,17 +173,21 @@ if($_POST){
 
 $conn=$mydb->getConn();
 $recupUsers = $conn -> query('SELECT * FROM utilisateurs') ;
+$userbasediv='<div id="useradmin">';
+echo $userbasediv;
 while ($user = $recupUsers -> fetch()){
 	   // var_dump($user);
-	$tmp = '<div id="useradmin">';
+	$tmp = '<div class="useradminbelow">';
     $tmp .='<span><h3> username: '.$user['login'].'</h3>&#160;</span>';
     $tmp .= '<span> id: '.$user['id'].'&#160;</span>';
     $tmp .= '<span> droits: '.$user['id_droits'].'&#160;</span>';
-    $tmp .= '<span> droits: '.$user['email'].'&#160;</span>';	
+    $tmp .= '<span> email: '.$user['email'].'&#160;</span>';	
     $tmp .= '<form method="post"><button type="submit" name="edit_user" id="modifybtn" value="'.$user['id'].'">edit</button><button type="submit" name="delete_user" id="modifybtn" value="'.$user['id'].'">delete</button></form>';
     $tmp .= '</div>';
     echo $tmp;
 }
+$userbasediv='</div>';
+echo $userbasediv;
 
 
 // add , delete , erase categories______________________________________
@@ -166,8 +203,8 @@ if(isset($_POST['edit_categories'])){
 	$categories=new categories($pdo);
 	$categories=$categories->getAllCategories();
 	for($i=0;$i<=isset($categories[$i]);$i++){
-		$cat.= '<span><b>'.$categories[$i]['nom'].'</b></span> <i>'.$categories[$i]['id'].'</i><br>';
-		$cat.= '<form method="post"><button type="submit" name="edit_cat" id="modifybtn" value="'.$categories[$i]['id'].'">edit</button><button type="submit" name="delete_cat" id="modifybtn" value="'.$categories[$i]['id'].'">delete</button></form>';
+		$cat.= '<br><span><b>'.$categories[$i]['nom'].'</b></span> <i>'.$categories[$i]['id'].'</i><br>';
+		$cat.= '<form method="post"><button type="submit" name="edit_cat" id="modifybtn" value="'.$categories[$i]['id'].'">edit</button><button type="submit" name="delete_cat" id="modifybtn" value="'.$categories[$i]['id'].'">delete</button></form><br>';
 	}
 	$cat .= '<form method="post"><button type="submit" name="close" value="close" id="modifybtn">close edit categories</button></form><br>';
 	$cat .= '<form method="post"><button type="submit" name="add_cat" value="add" id="modifybtn">ADD NEW CATEGORY</button></form>';
@@ -176,13 +213,14 @@ if(isset($_POST['edit_categories'])){
 if(isset($_POST['edit_cat'])){
 	$edcat= '<div class="fakemodal"><form method="post">';
 	$edcat.= '<input type="text" name="categoriesname" placeholder="category"/><br><br>';
-	$edcat.='<button type="submit" name="edit_cat_choice" id="modifybtn" value="'.$_POST['edit_cat'].'">edit</button>';
+	$edcat.='<button type="submit" name="edit_cat_choice" id="modifybtn" value="'.$_POST['edit_cat'].'">edit</button><br>';
+	$edcat.='<input type="submit" name="close" value="close" id="modifybtn"></input></form>';
 	echo $edcat;
 }
 if(isset($_POST['edit_cat_choice'])){
 	if(isset($_POST['categoriesname'])){
 		if(testPost($_POST['categoriesname'])===true){
-			$nom_edit=$_POST['categoriesname'];
+			$nom_edit=htmlspecialchars($_POST['categoriesname']);
 			$id_cat=$_POST['edit_cat_choice'];
 			$categories=new categories($pdo);
 			$categories=$categories->editCatById($id_cat,$nom_edit);
@@ -210,11 +248,32 @@ if(isset($_POST['add_cat_btn'])){
 	if(isset($_POST['addcategoriesname'])){
 		if(testPost($_POST['addcategoriesname'])===true){
 			$categories=new categories($pdo);
-			$categories->addCatName($_POST['addcategoriesname']);
+			$post=htmlspecialchars($_POST['addcategoriesname']);
+			$categories->addCatName($post);
 		}
 	}
 }
 
+echo '</div>'; //catdiv
+echo '<br><br>';
+echo '<div id="adminarticles">';
+echo '<table>';
+$article=new article($pdo);
+$count=$article->totalNum();
+$articles=$article->getAllArticles();
+//var_dump($articles);
+$articles=viewTotalArticles($articles);
+$newarticle=articleLayout($articles);
+echo $newarticle;
+echo '</table><br><br>';
+echo '</div>';
+echo '<div id="subpagearticles">';
+echo '<small><i>total num of articles on this site: '.$count.'</i></small>';
+echo articlesPages($count);	
+$categories=new categories($pdo);
+$categories=$categories->getAllCategories();
+showCatNav($categories);
+echo '</div><br><br>';	//subpagearticle______
 
 ?>
 </main>

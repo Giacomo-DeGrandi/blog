@@ -65,6 +65,27 @@ class user {
         $executed = $prepared2->execute([':id'=>$id,':login'=> $login ,':password'=> $password,':email'=> $email,':id_droits'=> $id_droits]);
         }
 	}
+	public function updateAdmin($login,$password,$email,$id_droits,$id,$current){
+		$pdo=$this->pdo;	//
+		$check= " SELECT * FROM utilisateurs WHERE login=:login OR email=:email ";
+		$prepared = $pdo->prepare($check);
+        $executed = $prepared->execute([':login'=> $login,':email'=> $email]);
+        $row = $prepared->fetch(PDO::FETCH_ASSOC);
+        var_dump($row);
+        if(!empty($row)){     
+        	if($row['id']===$id){
+				$sql = " UPDATE utilisateurs SET  login=:login,password=:password,email=:email,id_droits=:id_droits WHERE id=:id ";
+		        $prepared2 = $pdo->prepare($sql);
+		        $executed = $prepared2->execute([':id'=>$id,':login'=> $login ,':password'=> $password,':email'=> $email,':id_droits'=> $id_droits]);        		
+        	} else { 
+        		return false; 
+        	}
+        } else {
+			$sql = " UPDATE utilisateurs SET  login=:login,password=:password,email=:email,id_droits=:id_droits WHERE id=:id ";
+	        $prepared2 = $pdo->prepare($sql);
+	        $executed = $prepared2->execute([':id'=>$id,':login'=> $login ,':password'=> $password,':email'=> $email,':id_droits'=> $id_droits]);
+        }
+	}
 
 	public function getAllInfo($id_user){
 		$pdo=$this->pdo;	//
@@ -130,7 +151,11 @@ class user {
 	}
 	public function deleteUser($id){
 		$pdo=$this->pdo;
-		$prepared=$pdo->prepare(" DELETE FROM utilisateurs WHERE id=:id ");
+		$prepared=$pdo->prepare(" DELETE utilisateurs,articles,commentaires
+								  FROM utilisateurs
+								  INNER JOIN articles ON utilisateurs.id = articles.id_utilisateur
+								  INNER JOIN commentaires ON utilisateurs.id = commentaires.id_utilisateur
+								  WHERE utilisateurs.id = :id ; ");
 		$prepared->execute([':id'=> $id ]);
 	}
 }
@@ -201,11 +226,12 @@ class article {
         $prepared2 = $pdo->prepare($sql);
         $executed = $prepared2->execute([':id'=>$id_article,':article'=>$edit]);
 	}
-	public function deleteArticle($id_article){
+	public function deleteArticle($id){
 		$pdo=$this->pdo;
-		$prepared=$pdo->prepare(" DELETE FROM articles WHERE id=:id ");
-		$prepared->execute([':id'=> $id_article ]);
-	}								
+		$prepared=$pdo->prepare(" DELETE FROM articles WHERE id = :id; 
+								  DELETE FROM commentaires WHERE id_article = :id ;");
+		$prepared->execute([':id'=> $id ]);
+	}							
 }
 
 //class comments___________
@@ -254,6 +280,12 @@ class comments {
 		$id=$id_comm;
 		$prepared=$pdo->prepare(" DELETE FROM commentaires WHERE id=:id ");
 		$prepared->execute([':id'=> $id ]);		
+	}
+	function deleteCommentFromArticleId($id_article){
+		$pdo=$this->pdo;
+		$id=$id_article;
+		$prepared=$pdo->prepare(" DELETE FROM commentaires WHERE id_article=:id_article ");
+		$prepared->execute([':id_article'=> $id ]);		
 	}
 
 }
