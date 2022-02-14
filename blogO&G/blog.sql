@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Creato il: Feb 11, 2022 alle 08:34
+-- Creato il: Feb 14, 2022 alle 10:11
 -- Versione del server: 5.7.31
 -- Versione PHP: 7.3.21
 
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `articles` (
   `id_categorie` int(11) NOT NULL,
   `date` timestamp NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=34 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=53 DEFAULT CHARSET=latin1;
 
 --
 -- Dump dei dati per la tabella `articles`
@@ -52,11 +52,9 @@ INSERT INTO `articles` (`id`, `article`, `id_utilisateur`, `id_categorie`, `date
 (8, 'Klein’s Approachable Avant-Garde\r\nFor her new album Harmattan, singer/producer Klein asked esteemed academic and poet Fred Moten to write the liner notes. The way she connected with Moten was slightly unusual. “Really and truly, he commented on one of my Youtube videos,” she says, laughing. “We got to talking, and I was like, ‘Do you want to write a little blurb?’ And some of the things he wrote I didn’t see in [the album] originally, so I was like ‘Yeah, I’m a decomposer!’” It’s a quirky yet completely on-brand story for the London-based musician, one that highlights her deep comfort within both music’s fringes and its mainstream.\r\n\r\nMoten isn’t the only creative type with whom Klein has collaborated over the last few years, and Harmattan is in some ways the result of Klein exploring her musical circle. “Unknown Opps” features saxophonist Keahnne Whitby and Khush Jandu Quiney, the latter of whom was in her band when she opened for Moor Mother in 2019. “I would literally just meet someone on Instagram and be like ‘Oh, you play! Cool, cool.’ So it was just natural, and we were just chilling until I asked if they want to be on my track.” Welsh opera singer Charlotte Church guested on “Skyfall” after introducing herself when Klein opened for Bjork on the Utopia tour. She describes her collaborations as genial: “A lot of people I work with are friends first, or just for fun. I’m shy, and I get nervous that I have nothing to bring to the table. But over time, I’ve gotten more confident. I don’t think I’m going to ruin the track anymore.”', 4, 2, '2022-02-07 19:52:26'),
 (9, 'Life Lessons from André Leon Talley\r\n“Darling, clothes are not important in this pandemic. What’s important is your strength that comes from your faith, your values. All of that is very ingrained in you, so therefore you can survive.”\r\n\r\n(2020)\r\n\r\nWelcome to Life Lessons. Today, we mourn the loss of one of our own—the inimitable André Leon Talley. News of the trailblazing fashion editor’s passing came late on Tuesday night, sparking a flood of tearful tributes and joyful memorials in honor of this towering (six-foot-six) cultural icon. André began his storied career in the offices of this very publication—as a receptionist for Andy Warhol—and rose to claim the carefully gate-kept title of Creative Director and Editor at Large of Vogue not long thereafter. In the years since, André, a Black queer man raised in the Jim Crow South, relentlessly rewrote the fashion industry’s rules, dressing First Ladies, casting Naomi Campbell in a reimagined “Gone With the Wind” shoot for Vanity Fair, and carving out space in the magazine world’s highest echelons—all in his signature uniform of oversized furs and candy-colored kaftans. To mark an icon’s passing, we’re bringing together the brightest moments from our decades’ worth of interviews with André, courtesty of the likes of Carolina Herrera (1981), Michael Kors (2019), Gloria von Thurn und Taxis (2020), and Demna Gavasalia (2021). So sit back and grab a pen, darling—you just might learn a thing or two.', 4, 3, '2022-02-08 05:20:56'),
 (10, 'New cloud-based platform opens genomics data to all          Harnessing the power of genomics to find risk factors for major diseases or search for relatives relies on the costly and time-consuming ability to analyze huge numbers of genomes. A team co-led by a Johns Hopkins University computer scientist has leveled the playing field by creating a cloud-based platform that grants genomics researchers easy access to one of the world\'s largest genomics databases.\r\n\r\nKnown as AnVIL (Genomic Data Science Analysis, Visualization, and Informatics Lab-space), the new platform gives any researcher with an Internet connection access to thousands of analysis tools, patient records, and more than 300,000 genomes. The work, a project of the National Human Genome Institute (NHGRI), appears today in Cell Genomics.\r\n\r\n\"AnVIL is inverting the model of genomics data sharing, offering unprecedented new opportunities for science by connecting researchers and datasets in new ways and promising to enable exciting new discoveries,\" said project co-leader Michael Schatz, Bloomberg Distinguished Professor of Computer Science and Biology at Johns Hopkins.\r\n\r\nTypically genomic analysis starts with researchers downloading massive amounts of data from centralized warehouses to their own data centers, a process that is not only time-consuming, inefficient, and expensive, but also makes collaborating with researchers at other institutions difficult.\r\n\r\n\"AnVIL will be transformative for institutions of all sizes, especially smaller institutions that don\'t have the resources to build their own data centers. It is our hope that AnVIL levels the playing field, so that everyone has equal access to make discoveries,\" Schatz said.\r\n\r\nGenetic risk factors for ailments such as cancer or cardiovascular disease are often very subtle, requiring researchers to analyze thousands of patients\' genomes to discover new associations. The raw data for a single human genome comprises about 40GB, so downloading thousands of genomes can take takes several days to several weeks: A single genome requires about 10 DVDs worth of data, so transferring thousands means moving \"tens of thousands of DVDs worth of data,\" Schatz said.\r\n\r\nIn addition, many studies require integrating data collected at multiple institutions, which means each institution must download its own copy while ensuring that patient-data security is maintained. This challenge is expected to become even greater in the future, as researchers embark on ever-larger studies requiring the analysis of hundreds of thousands to millions of genomes at once.\r\n\r\n\"Connecting to AnVIL remotely eliminates the need for these massive downloads and saves on the overhead,\" Schatz says. \"Instead of painfully moving data to researchers, we allow researchers to effortlessly move to the data in the cloud. It also makes sharing datasets much easier so that data can be connected in new ways to find new associations, and it simplifies a lot of computing issues, like providing strong encryption and privacy for patient datasets.\"\r\n\r\nAnVIL also provides researchers with several major analysis tools, including Galaxy, developed in part at Johns Hopkins, along with other popular tools such as R/Bioconductor, Jupyter notebooks, WDLs, Gen3, and Dockstore to support both interactive analysis and large-scale batch computing. Collectively, these tools allow researchers to tackle even the largest studies without having to build out their own computing environments.\r\n\r\nResearchers from all over the world currently use the platform to study a variety of genetic diseases, including autism spectrum disorders, cardiovascular disease, and epilepsy. Schatz\'s team, part of the Telomere-to-Telomere Consortium, used it to reanalyze thousands of human genomes with the new reference genome to discover more than 1 million new variants.\r\n\r\nAlready, the AnVIL team has collected petabytes of data from several of the largest NHGRI projects, including hundreds of thousands of genomes from the Genotype-Tissue Expression (GTEx), Centers for Mendelian Genetics (CMG), and Centers for Common Disease Genomics (CCDG) projects, with plans to host many more projects in the near future.\r\n\r\nThe AnVIL team includes researchers from Johns Hopkins University, the Broad Institute of MIT and Harvard, Harvard University, Vanderbilt University, the University of Chicago, Oregon Health and Sciences University, Yale University School of Medicine, the University of California, Santa Cruz, Roswell Park Comprehensive Cancer Institute, the Pennsylvania State University, the City University of New York, the Carnegie Institute, and Washington University in St. Louis.\r\n\r\nThis work was supported through cooperative agreement awards from NHGRI, with co-funding from the National Institute of Health\'s Office of Data Science Strategy to the Broad Institute and Johns Hopkins University.\r\n\r\nStory Source:\r\n\r\nMaterials provided by Johns Hopkins University. Original written by Lisa Ercolano. Note: Content may be edited for style and length.', 1, 1, '2022-02-08 14:13:58'),
-(23, 'retest', 9, 1, '2022-02-10 05:15:01'),
-(20, 'test from profile', 1, 1, '2022-02-10 05:09:10'),
-(21, 'test from index', 1, 1, '2022-02-10 05:09:52'),
-(22, 'test from articles', 4, 1, '2022-02-10 05:14:29'),
-(19, 'test from profile', 1, 1, '2022-02-10 05:08:39');
+(44, 'My new article to test with a Lorem\r\n\r\nontrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of &amp;#34;de Finibus Bonorum et Malorum&amp;#34; (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, &amp;#34;Lorem ipsum dolor sit amet..&amp;#34;, comes from a line in section 1.10.32.\r\n\r\nThe standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from &amp;#34;de Finibus Bonorum et Malorum&amp;#34; by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.', 1, 3, '2022-02-13 12:33:07'),
+(49, 'test to try from admin page', 1, 1, '2022-02-14 04:44:13'),
+(50, 'test from admin page', 1, 1, '2022-02-14 07:10:41');
 
 -- --------------------------------------------------------
 
@@ -69,7 +67,7 @@ CREATE TABLE IF NOT EXISTS `categories` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nom` varchar(80) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 
 --
 -- Dump dei dati per la tabella `categories`
@@ -94,7 +92,7 @@ CREATE TABLE IF NOT EXISTS `commentaires` (
   `id_utilisateur` int(11) NOT NULL,
   `date` timestamp NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=36 DEFAULT CHARSET=latin1;
 
 --
 -- Dump dei dati per la tabella `commentaires`
@@ -104,12 +102,17 @@ INSERT INTO `commentaires` (`id`, `commentaire`, `id_article`, `id_utilisateur`,
 (1, 'i don\'t understand your points of views, i disagree', 1, 12, '2022-01-28 14:06:59'),
 (2, 'just another comments ', 2, 12, '2022-01-28 14:06:59'),
 (3, 'ok nice', 9, 4, '2022-02-08 06:10:57'),
+(31, 'what about a long text what about a long text what about a long text what about a long text what about a long text what about a long text what about a long text what about a long text what about a long text ', 44, 16, '2022-02-13 20:39:12'),
 (5, 'test another comment on another article test number 1', 8, 4, '2022-02-07 06:11:27'),
-(6, 'tryme', 9, 1, '2022-02-07 06:16:33'),
+(6, 're try now', 9, 1, '2022-02-07 06:16:33'),
+(30, 'test bibi', 44, 16, '2022-02-13 20:38:39'),
 (7, 'test third comments on the same article btw superinteresting person!', 9, 1, '2022-02-07 06:16:33'),
-(12, 'test', 32, 0, '2022-02-10 10:08:42'),
-(13, 'test', 32, 0, '2022-02-10 10:09:16'),
-(14, 'test', 32, 0, '2022-02-10 10:09:22');
+(28, 'test comments', 44, 1, '2022-02-13 20:35:28'),
+(25, 'test', 10, 1, '2022-02-13 07:54:49'),
+(26, 'retest', 10, 0, '2022-02-13 12:10:48'),
+(27, 'retest', 10, 0, '2022-02-13 12:11:02'),
+(32, 'whatifhtml  echo &amp;#39; i&amp;#39;m in ; ', 44, 16, '2022-02-13 20:41:04'),
+(34, 'test comment', 49, 1, '2022-02-14 04:44:27');
 
 -- --------------------------------------------------------
 
@@ -136,26 +139,6 @@ INSERT INTO `droits` (`id`, `nom`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `pictures`
---
-
-DROP TABLE IF EXISTS `pictures`;
-CREATE TABLE IF NOT EXISTS `pictures` (
-  `id_article` int(11) NOT NULL,
-  `link` varchar(50) NOT NULL,
-  `id_utilisateur` int(11) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
---
--- Dump dei dati per la tabella `pictures`
---
-
-INSERT INTO `pictures` (`id_article`, `link`, `id_utilisateur`) VALUES
-(1, '/public/pictures/lithium.webp', 1);
-
--- --------------------------------------------------------
-
---
 -- Struttura della tabella `utilisateurs`
 --
 
@@ -167,7 +150,7 @@ CREATE TABLE IF NOT EXISTS `utilisateurs` (
   `email` varchar(255) NOT NULL,
   `id_droits` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=18 DEFAULT CHARSET=latin1;
 
 --
 -- Dump dei dati per la tabella `utilisateurs`
@@ -176,7 +159,9 @@ CREATE TABLE IF NOT EXISTS `utilisateurs` (
 INSERT INTO `utilisateurs` (`id`, `login`, `password`, `email`, `id_droits`) VALUES
 (1, 'nami2', '1234', 'nami2@nami2.io', 1337),
 (4, 'adminz', '1234', 'adminz@adminz.io', 1337),
-(9, 'mina', '1234', 'mina@mina.io', 42);
+(16, 'bibi', '1234', 'bibi@bibi.io', 1),
+(9, 'mina', '1234', 'mina@mina.io', 42),
+(17, 'citi', '1234', 'citi@citi.com', 1);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
