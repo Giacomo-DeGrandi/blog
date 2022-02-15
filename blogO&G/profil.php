@@ -158,8 +158,8 @@ if( testPost(isset($_POST['username']))&&
 	isset($_POST['email'])&&
 	filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)&&
 	testPost(isset($_POST['passwordconf']))&&
-	testPost($_POST['password'])===testPost($_POST['passwordconf'])&&
-	(isset($_POST['send'])) ){
+	testPost($_POST['password'])===testPost($_POST['passwordconf'])
+	 ){
 			$_POST['passwordconf']=htmlspecialchars($_POST['passwordconf']);
 			$id=$_COOKIE['connected'];
 			$login=htmlspecialchars($_POST['username']);
@@ -168,12 +168,19 @@ if( testPost(isset($_POST['username']))&&
 			$row=$user->getRights($id);
 			$id_droits=$row['id_droits']; //int cause in bd int id
 			$user=$user->updateUser($login,$password,$email,$id_droits,$id);
-		if($user===false){
-			echo 'This user already exists.<br>Please, choose another username ';
-		} else {
-			echo '<span class="fakemodal">you\'ve succesfully updated your informations</span>';
-			header('location:profil.php');
-		}
+			if(isset($_POST['send'])){
+				if($user===false){
+					echo '<span class="fakemodal">This user already exists.<br>Please, choose another username';
+					echo '<form action=""><button type="submit" name="close" class="miniclose">close</button></form></span>';
+
+				} else {
+					$mod=1;
+					if($mod===1){
+						echo '<span class="fakemodal">you\'ve succesfully updated your informations';
+						echo '<form action=""><button type="submit" name="close" class="miniclose">close</button></form></span>';
+					}
+				}
+			}
 }
 
 echo '</div><br>';
@@ -207,9 +214,7 @@ if(isset($_COOKIE['connected'])){
 			echo '<small>you need to be a moderator or administrator to write articles</small>';
 			echo '<style> #write{ background-color:var(--black); opacity:0.3; .fakemodal{ opacity:1;}</style>';
 		}
-	} else {
-		header('Location:profil.php');
-	}
+	} 
 }
 if( isset($_POST['articletext'])&&
 	testPost($_POST['articletext'])===true&&

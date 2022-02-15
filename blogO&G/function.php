@@ -134,6 +134,7 @@ function viewAllArticles($article,$n){
 			$tmp .= '<tr><td><h2><div class="subart">'.textBeginning($article[$i]['article']).'...</h2>
 			<h4><form action="articles.php" method="get"><button type="submit" name="categories" value="'.$article[$i]['nom'].'">'.$article[$i]['nom'].'</button></form><br></h4><i>'.$article[$i]['date'].'</i>
 			<div class="authorname">'.textBeginning($article[$i]['article']).'</div>
+						<p>by:'.$article[$i]['login'].'</p><br>
 			<p>'.textBeginning2($article[$i]['article']).'...</p>
 			<small><form action="article.php" method="get"><button type="submit" name="id" value="'.$article[$i]['id'].'"><i>continue to read</i></button></form></div></small><span id="changemeart"></span></td></tr>';
 		}
@@ -150,23 +151,6 @@ function viewTotalArticles($article){
 			<div class="authorname">'.textBeginning($article[$i]['article']).'</div>
 			<p>'.textBeginning2($article[$i]['article']).'...</p>
 			<small><form action="article.php" method="get"><button type="submit" name="id" value="'.$article[$i]['id'].'"><i>continue to read</i></button></form></div></small><span id="changemeart"></span></td></tr>';
-		}
-	}
-	return $tmp;
-}
-
-function viewCatArticles($article,$cat){
-	$tmp='';
-	for($i=0;$i<=isset($article[$i]);$i++){
-		if($article[$i]['nom']===$cat){
-			$tmp .= '<tr><td><div class="subart"><h2>'.$article[$i]['login'].'</h2>
-			<h4><form action="articles.php" method="get"><button type="submit" name="categories" value="'.$article[$i]['nom'].'">'.$article[$i]['nom'].'</button></form><br><i>'.($article[$i]['nom']).'</i></h4><i>'.$article[$i]['date'].'</i>
-			<div class="authorname">'.textBeginning($article[$i]['article']).'...</div>
-			<p>'.textBeginning2($article[$i]['article']).'...</p>
-			<small><form action="article.php" method="get"><button type="submit" name="id" value="'.$article[$i]['id'].'"><i>continue to read</i></button></form></small><br><br></div></td></tr>';
-		}
-		if($i===5){
-			return $tmp;			
 		}
 	}
 	return $tmp;

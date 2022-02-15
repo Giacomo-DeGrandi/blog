@@ -117,6 +117,7 @@ if($_POST){
 echo '<table>';
 $article=new article($pdo);
 $count=$article->totalNum();
+if($count>0){
 $articles=$article->getAllArticles();
 $articlealias=$articles;
 if($_GET){
@@ -134,10 +135,12 @@ if($_GET){
 if(isset($_GET['categories'])){
 		$k=0;
 		$cat=$_GET['categories'];	
-		$articles=viewCatArticles($articlealias,$cat);
+		$articles=$article->getArticlesByCat($cat);
+		$articles=viewTotalArticles($articles,$k);
 }
 $newarticle=articleLayout($articles); 
 echo $newarticle;
+} else { echo '<h2>there are no articles yet</h2>';}
 echo '</table><br><br>';
 echo '<div id="subpagearticles">';
 echo '<small><i>total num of articles on this site: '.$count.'</i></small>';

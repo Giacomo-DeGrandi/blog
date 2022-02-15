@@ -242,8 +242,8 @@ background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' hei
 	border-radius: 15px;
 	border:solid 1px white;
 	box-shadow: var(--genshad);
-	opacity: 1;
 }
+
 .fakemodaltext{
 	padding: 45px;
 	position: absolute;

@@ -90,9 +90,10 @@ if( testPost(isset($_POST['username']))&&
 			$_POST['passwordconf']=htmlspecialchars($_POST['passwordconf']);
 			$login=htmlspecialchars($_POST['username']);
 			$password=htmlspecialchars($_POST['password']);
+			$password_encrypted = password_hash($password, PASSWORD_BCRYPT);
 			$email=htmlspecialchars($_POST['email']);
 			$id_droits=1; //int cause in bd int id
-			$user=$user->subscribeUser($login,$password,$email,$id_droits);
+			$user=$user->subscribeUser($login,$password_encrypted,$email,$id_droits);
 		if($user===false){
 			echo 'This user already exists.<br>Please, choose another username or log in <br> to get access to your account';
 		} else {
@@ -108,7 +109,7 @@ if(isset($_POST['connect'])||isset($_POST['password_conn'])){
 		testPost(isset($_POST['password_conn']))){
 				$login=htmlspecialchars($_POST['connect']);
 				$password=htmlspecialchars($_POST['password_conn']);
-				$row=$user->connect($login,$password,$user);
+				$row=$user->connect($login,$password);
 				if(!empty($row)){
 					echo '<span class="fakemodal">succesfully connected.<br> Hi <b>'.$login.'<b></span>';
 					setcookie('user','user', time() +36000);	

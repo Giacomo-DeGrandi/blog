@@ -60,6 +60,7 @@ class user {
         if(!empty($row)){
         	return false;
         } else {
+        $password = password_hash($password, PASSWORD_BCRYPT);
 		$sql = " UPDATE utilisateurs SET  login=:login,password=:password,email=:email,id_droits=:id_droits WHERE id=:id ";
         $prepared2 = $pdo->prepare($sql);
         $executed = $prepared2->execute([':id'=>$id,':login'=> $login ,':password'=> $password,':email'=> $email,':id_droits'=> $id_droits]);
@@ -71,7 +72,7 @@ class user {
 		$prepared = $pdo->prepare($check);
         $executed = $prepared->execute([':login'=> $login,':email'=> $email]);
         $row = $prepared->fetch(PDO::FETCH_ASSOC);
-        var_dump($row);
+        //var_dump($row);
         if(!empty($row)){     
         	if($row['id']===$id){
 				$sql = " UPDATE utilisateurs SET  login=:login,password=:password,email=:email,id_droits=:id_droits WHERE id=:id ";
@@ -98,10 +99,19 @@ class user {
 
 	public function connect($login,$password){
 		$pdo=$this->pdo;
-		$prepared = $pdo->prepare("SELECT * FROM utilisateurs WHERE login = :login AND password = :password");
-		$prepared->execute(['login' => $login,':password'=> $password]); 
-		$row = $prepared->fetch(PDO::FETCH_ASSOC);
-		return $row;
+		$prepared1 = $pdo->prepare("SELECT * FROM utilisateurs WHERE login = :login ");
+		$prepared1->execute(['login' => $login ]);
+		$row = $prepared1->fetch(PDO::FETCH_ASSOC);
+		if(password_verify($password, $row['password'])){
+			$password=$row['password'];
+			$prepared = $pdo->prepare("SELECT * FROM utilisateurs WHERE login = :login AND password = :password ");
+			$prepared->execute(['login' => $login,':password'=> $password]); 
+			$row = $prepared->fetch(PDO::FETCH_ASSOC);
+			return $row;
+		} else {
+			$row=null;
+			return $row;
+		}
 	}
 
 	public function isConnected	($id){
@@ -183,6 +193,20 @@ class article {
 									  ON articles.id_categorie = categories.id 
 									  ORDER BY articles.date DESC");	
 		$executed=$prepared->execute();
+		$row = $prepared->fetchAll(); 
+		return $row; 
+	}
+	public function getArticlesByCat($cat){
+		$pdo=$this->pdo;
+		$prepared=$pdo->prepare("  SELECT articles.article, articles.date, articles.id, utilisateurs.login, categories.nom
+									FROM articles
+									JOIN utilisateurs
+									  ON articles.id_utilisateur = utilisateurs.id
+									JOIN categories
+									  ON articles.id_categorie = categories.id 
+									  WHERE categories.nom = :nom
+									  ORDER BY articles.date DESC");	
+		$executed=$prepared->execute([':nom'=> $cat ]);
 		$row = $prepared->fetchAll(); 
 		return $row; 
 	}
