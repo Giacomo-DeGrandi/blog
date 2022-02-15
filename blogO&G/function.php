@@ -176,7 +176,7 @@ function articlesPages($count){
 
 function viewOneArticle($article){
 
-	$tmp='<div class="subart"><tr><td><h2>'.$article[0]['login'].'</h2>
+	$tmp='<div class="subart"><tr><td><h2><i><small>by: </small></i>'.$article[0]['login'].'</h2>
 		<h4><form action="articles.php" method="get"><button type="submit" name="categories" value="'.$article[0]['nom'].'">'.$article[0]['nom'].'</button></form><br></h4><i>'.$article[0]['date'].'</i>
 		<div class="authorname">'.textBeginning($article[0]['article']).'...</div>
 		<p>'.$article[0]['article'].'</p>
@@ -188,7 +188,7 @@ function viewOneArticle($article){
 function viewArticles($article,$x){
 	$tmp='';
 	for($i=0;$i<$x;$i++){
-			$tmp .= '<tr><td> <div class="subart"><h2> '.$article[$i]['login'].'</h2>
+			$tmp .= '<tr><td> <div class="subart"><h2><i><small>by: </small></i>'.$article[$i]['login'].'</h2>
 			<h4><form action="articles.php" method="get"><button type="submit" name="categories" value="'.$article[$i]['nom'].'">'.$article[$i]['nom'].'</button></form><br></h4><i>'.$article[$i]['date'].'</i>
 			<div class="authorname">'.textBeginning($article[$i]['article']).'...</div>
 			<p>'.textBeginning2($article[$i]['article']).'...</p>
