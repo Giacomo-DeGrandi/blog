@@ -198,7 +198,7 @@ class article {
 	}
 	public function getArticlesByCat($cat){
 		$pdo=$this->pdo;
-		$prepared=$pdo->prepare("  SELECT articles.article, articles.date, articles.id, utilisateurs.login, categories.nom
+		$prepared=$pdo->prepare("  SELECT articles.article, articles.date, articles.id, utilisateurs.login, categories.nom, categories.id
 									FROM articles
 									JOIN utilisateurs
 									  ON articles.id_utilisateur = utilisateurs.id
@@ -206,16 +206,26 @@ class article {
 									  ON articles.id_categorie = categories.id 
 									  WHERE categories.nom = :nom
 									  ORDER BY articles.date DESC");	
-		$executed=$prepared->execute([':nom'=> $cat ]);
+		$executed=$prepared->execute([':nom' => $cat ]);
 		$row = $prepared->fetchAll(); 
 		return $row; 
 	}
 
-	public function totalNum(){
+	public function totalNum($cat){
 		$pdo=$this->pdo;
+		if(!$cat){
 		$prepared=$pdo->query( "SELECT COUNT(*) FROM articles");
-		$count = $prepared->fetchAll();
-		return $count[0]['COUNT(*)']; 
+		$count = $prepared->fetch();
+		return $count['COUNT(*)'];
+		} else {
+		$prepared=$pdo->prepare( "SELECT id FROM categories WHERE nom = :nom ");
+		$executed=$prepared->execute([':nom' => $cat ]);
+		$id = $prepared->fetch();
+		$prepared=$pdo->prepare( "	SELECT COUNT(*) FROM articles WHERE id_categorie = :id ");
+		$executed=$prepared->execute([':id' => $id['id'] ]);
+		$count = $prepared->fetchColumn();
+		return $count;			
+		}
 	}
 
 	public function getOneArticle($id){

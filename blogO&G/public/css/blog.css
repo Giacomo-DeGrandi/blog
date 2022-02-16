@@ -101,6 +101,18 @@ button {
 	background-color: white;
 }
 
+#linkfakebtn{
+	font-family: var(--genfont);
+	font-size: 0.8em;
+	width: 100px;
+	padding: 1px;
+	border: none;
+	background-color: var(--lavender);
+	box-shadow: var(--solidshad);
+	color: var(--black);
+	background-color: white;
+}
+
 span{
 	padding: 10px;
 }
@@ -112,6 +124,14 @@ button:hover{
 	background-color: var(--medviored);
 	box-shadow: var(--solidshadtails);
 	transition: 1s;
+}
+#linkfakebtn:hover{
+	border-radius: 15px;
+	border: none;
+	color: white;
+	background-color: var(--medviored);
+	box-shadow: var(--solidshadtails);
+	transition: 1s;	
 }
 
 b{
@@ -369,37 +389,43 @@ display: flex;
 		position: sticky;
 	position: absolute;
 }
+
+
 #menu {
 		padding: 5px;
 	position: relative;
 }
 #subfoot {
-	display: none;
+	display: hidden;
+	visibility: hidden;
 	color:var(--black);
 	height: 0px;
 }
-
+#logogit{
+	float: left;
+}
 #logogit:hover #subfoot{
+	visibility: visible;
 	display: block;
 	transition: 1s;
 }
 #ourfooter {
+	display: flex;
 	padding: 18px;
 	color: var(--white);
 	background-color: var(--black);
-	justify-content: flex-end;
 	height: 50px;
 	bottom: 0;
 }
 footer a{
 	text-decoration: none;
 	color: white;
-	font-family: var(--genfont);
+	font-family: var(--dispfont);
 }
 footer a:hover{
 	text-decoration: none;
 	color: var(--white);
-	font-family: var(--genfont);
+	font-family: var(--dispfont);
 }
 #sub {
 	padding: 1em;
@@ -411,6 +437,28 @@ footer a:hover{
 	display: block;
 	padding: 1.3em;
 	transition: 1s;
+}
+
+#btnfooters input{
+		border: none;
+		font-size: 1em;
+		background-color: var(--black);		
+}
+#btnfooters input:hover{
+		border: none;
+		font-size: 1em;
+		background-color: var(--white);		
+		color: var(--black);
+}
+#linksfoot{
+	justify-items: end;
+
+}
+
+#btnfooters{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 }
 
 /* main art view */
@@ -490,6 +538,3 @@ footer a:hover{
 
 }
 
-.useradminbelow{
-
-}

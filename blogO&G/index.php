@@ -112,9 +112,9 @@ echo '<table id="indexarttable">';
 $table=viewArticles($articles,3);
 echo $table;
 echo '</table>';
-$count=$article->totalNum();
+$count=$article->totalNum($cat=null);
 echo '<br><br><small><i>total num of articles on this site: '.$count.'</i></small>';
-echo articlesPages($count);
+echo articlesPages($count,$cat=null,$start=null);
 $categories=new categories($pdo); 
 $categories=$categories->getAllCategories();
 showCatNav($categories);
@@ -125,11 +125,30 @@ echo '<br><br>';
 </body>
 	<footer>
 		<div id="ourfooter">
-			<div id="logogit">
-				<img src="gitlogo.png" alt="gitlogoomar" width="40px" height="40px" >
-				<div id="subfoot">
-					<a href="https://github.com/Omar-Diane">Omar</a>
-					<a href="https://github.com/Giacomo-DeGrandi">Giak</a>
+			<div>
+				<div id="logogit">
+					<img src="gitlogo.png" alt="gitlogoomar" width="40px" height="40px" >
+					<div id="subfoot">
+						<a href="https://github.com/Omar-Diane">Omar</a>
+						<a href="https://github.com/Giacomo-DeGrandi">Giak</a>
+					</div>
+				</div>
+			</div>
+			<div id="linksfoot">
+				<div id="btnfooters">
+<?php
+
+if(!isset($_COOKIE['user'])){
+	$sess=null;
+	echo rightFooter($sess);
+} else {
+	$user=new user($pdo);		// get my user
+	$id=$_COOKIE['connected'];
+	$row=$user->getRights($id);
+	echo rightFooter($row['nom']);
+}
+
+?>
 				</div>
 			</div>
 		</div>

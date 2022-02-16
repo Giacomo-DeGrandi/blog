@@ -38,6 +38,31 @@ function rightHeader($cookie){
 	}
 }
 
+// footer function______
+
+function rightFooter($cookie){
+	echo '<div id="top_btns">';
+	switch($cookie){
+		case null:
+			$footer='<form action="" method="post"><input type="submit" name="subscribe" value="subscribe"/>
+					 <input type="submit" name="login" value="login"/></form></div>';
+			return $footer;
+			break;
+		case 'utilisateur':
+			$footer='<form action="profil.php" method="post"><input type="submit" name="compte" value="profil"/></form>
+					 <form action="" method="post"><input type="submit" name="disconnect" value="log out"></input></form></div>';
+			return $footer;
+			break;
+		case 'moderateur':
+		case 'administrateur':
+			$footer='<form action="profil.php" method="post"><input type="submit" name="profil" value="profil"/></form>
+					 <form action="" method="post"><input type="submit" name="create" value="create"/></form>
+					 <form action="index.php" method="post"><input type="submit" name="disconnect" value="log out"/></form></div>';
+			return $footer;
+			break;
+	}
+}
+
 // forms function________
 
 function rightForm($sess){
@@ -104,6 +129,8 @@ function showComments($row){
 	return $tmp.'</div>';
 }
 
+// Categories________________
+
 function catList($categories,$create){
 	$tmp='<i><small>chose a category: &#160; </small></i><select id="categories" name="categorieslist">';
 	for($i=0;$i<=isset($categories[$i]);$i++){
@@ -114,7 +141,48 @@ function catList($categories,$create){
 	return $create.'<form method="post"><input type="submit" name="close" value="close" id="modifybtn"></input></div></form>	<style> #write{ display:none;}.fakemodal{ opacity:1;} </style>';
 }
 
- // article controller__________
+
+function showCatNav($categories){
+	echo' <div class="catnav">';
+	for ($i=0;$i<=isset($categories[$i]) ;$i++) { 
+		echo '<form action="articles.php" method="get"><button type="submit" name="categories" value="'.$categories[$i]['nom'].'">'.$categories[$i]['nom'].'</button></form>&#160;&#160;&#160;';// get on categories to call NB the changing path of css (./) for this site section
+	}
+	echo '</div>';
+}
+
+function articlesPages($count,$cat,$start){
+	$tmp='';
+	$pagenum = round(($count+5/2)/5)*5; // SO s
+	$maxnum=$pagenum;
+	$tmp.= '<div id="pageslink">';
+	if($count<=$pagenum){
+		$pagenum/=5;
+		for($i=0;$i<$pagenum;$i++){
+			if($i==0){
+				if($cat){
+					if(isset($start) and $start!==0){
+						$tmp.= '<form action="articles.php" method="get"><button type="submit" name="categories" value="'.$cat.'">newest articles</button></form>';
+					} elseif(isset($start)) {
+						$tmp.= '<form action="./articles.php" method="get"><button type="submit" name="categories" value="'.$cat.'">newest articles</button></form>';						
+					}
+				} else {
+					$tmp.= '<form action="articles.php" method="get"><button type="submit" name="start" value="'.($i*5).'">newest articles</button></form>';
+				}
+			} else {
+				if($cat){
+					if(isset($start) and $start===0){
+						$tmp.= '<a href="articles.php?categories='.$cat.'&start='.($i*5).'" id="linkfakebtn">page '.$i.'</a>';		
+					}
+				} elseif(isset($start)) {
+					$tmp.= '<form action="articles.php" method="get"><button type="submit" name="start" value="'.($i*5).'">page '.$i.'</button></form>';
+				}
+			}
+		}
+		return $tmp.'</div>';
+	}
+}
+
+ // articles__________________
 
 function textBeginning($text){		//get just the beginning of the article as a title
 	$text=substr($text,0,25);
@@ -156,23 +224,6 @@ function viewTotalArticles($article){
 	return $tmp;
 }
 
-function articlesPages($count){
-	$tmp='';
-	$pagenum = round(($count+5/2)/5)*5; // SO s
-	$maxnum=$pagenum;
-	$tmp.= '<div id="pageslink">';
-	if($count<=$pagenum){
-		$pagenum/=5;
-		for($i=0;$i<$pagenum;$i++){
-			if($i==0){
-				$tmp.= '<form action="articles.php" method="get"><button type="submit" name="start" value="'.($i*5).'">newest articles</button></form>';
-			} else {
-				$tmp.= '<form action="articles.php" method="get"><button type="submit" name="start" value="'.($i*5).'">page '.$i.'</button></form>';
-			}
-		}
-		return $tmp.'</div>';
-	}
-}
 
 function viewOneArticle($article){
 
@@ -202,18 +253,10 @@ function articleLayout($thisart){
 	return $thisart;
 }
 
-// categories controller
-
-function showCatNav($categories){
-	echo' <div class="catnav">';
-	for ($i=0;$i<=isset($categories[$i]) ;$i++) { 
-		echo '<form action="articles.php" method="get"><button type="submit" name="categories" value="'.$categories[$i]['nom'].'">'.$categories[$i]['nom'].'</button></form>&#160;&#160;&#160;';		// get on categories to call NB the changing path of css (./) for this site section
-	}
-	echo '</div>';
-}
 
 
-// menu controller
+
+// menu ______________
 
 function menuSubNav($categories){
 	$tmp='';

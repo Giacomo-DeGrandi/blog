@@ -9,7 +9,17 @@ session_start();
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>articles</title>
-	<link rel="stylesheet" type="text/css" href="./public/css/blog.css">
+<?php  
+
+if(isset($_GET['categories']) and isset($_GET['start'])){
+	echo '<link rel="stylesheet" type="text/css" href="./public/css/blog.css">';
+} elseif(isset($_GET['categories']) and !isset($_GET['start'])) { 
+	echo '<link rel="stylesheet" type="text/css" href="./public/css/blog.css">'; 
+} else {
+	echo '<link rel="stylesheet" type="text/css" href="./public/css/blog.css">'; 	
+}
+
+?>
 </head>
 <header>
 <?php 
@@ -48,7 +58,7 @@ if($_POST){
 				setcookie('connected',$row['id'], -1);	
 				setcookie('user', $row['nom'], time() +36000);
 				session_destroy();
-				header('location: index.php');
+				header('location: ./index.php');
 				exit();
 				break;
 		case isset($_POST['disconnect']):
@@ -57,7 +67,7 @@ if($_POST){
 				setcookie('form', null, -1);
 				session_destroy();
 				session_write_close();
-				header('location: index.php');
+				header('location: ./index.php');
 				exit();
 				break;
 		case isset($_POST['subscribe']):
@@ -116,35 +126,59 @@ if($_POST){
 //echo '<div id="articleid">';
 echo '<table>';
 $article=new article($pdo);
-$count=$article->totalNum();
-if($count>0){
-$articles=$article->getAllArticles();
-$articlealias=$articles;
-if($_GET){
-	switch ($_GET):
-		case !isset($_GET['start']):
-			$k=0;
-			$articles=viewAllArticles($articles,$k);
-			break;
-		case isset($_GET['start']):
-			$k=$_GET['start'];
-			$articles=viewAllArticles($articles,$k);
-			break;
-	endswitch;
-}
 if(isset($_GET['categories'])){
-		$k=0;
-		$cat=$_GET['categories'];	
-		$articles=$article->getArticlesByCat($cat);
-		$articles=viewTotalArticles($articles,$k);
+	$cat=$_GET['categories'];	
+	$count=$article->totalNum($cat);
+} else {
+	$cat=null;
+	$count=$article->totalNum($cat);
 }
-$newarticle=articleLayout($articles); 
-echo $newarticle;
-} else { echo '<h2>there are no articles yet</h2>';}
+if($count>0){
+	$articles=$article->getAllArticles();
+	if($_GET){
+		switch ($_GET):
+			case !isset($_GET['start']) and !isset($_GET['categories']):
+				$k=0;
+				$articles=viewAllArticles($articles,$k);
+				echo articlesPages($count,$cat,$k).'<br>';
+				break;
+			case !isset($_GET['categories']) and isset($_GET['start']) :
+				$k=$_GET['start'];
+				$articles=viewAllArticles($articles,$k);
+				echo articlesPages($count,$cat,$k).'<br>';
+				break;
+			case isset($_GET['categories']) and isset($_GET['start']):
+				$k=$_GET['start'];
+				$cat=$_GET['categories'];	
+				$articles=$article->getArticlesByCat($cat);
+				$articles=viewAllArticles($articles,$k);	
+				echo articlesPages($count,$cat,$k).'<br>';
+				break;
+			case isset($_GET['categories']):
+				if(isset($_GET['start'])){
+					$k=$_GET['start'];
+				}
+				$k=0;
+				$cat=$_GET['categories'];	
+				$articles=$article->getArticlesByCat($cat);
+				$articles=viewAllArticles($articles,$k);
+				echo articlesPages($count,$cat,$k).'<br>';
+				break;
+		endswitch;
+	}
+	$newarticle=articleLayout($articles); 
+	echo $newarticle;
+} else {
+	 echo '<h2>there are no articles yet</h2>';
+}
 echo '</table><br><br>';
 echo '<div id="subpagearticles">';
-echo '<small><i>total num of articles on this site: '.$count.'</i></small>';
-echo articlesPages($count);	
+if(isset($_GET['categories'])){
+	echo '<small><i>total num of articles in this category: '.$count.'</i></small>';
+} else {
+	echo '<small><i>total num of articles in this site: '.$count.'</i></small>';	
+}
+
 $categories=new categories($pdo);
 $categories=$categories->getAllCategories();
 showCatNav($categories);
@@ -155,11 +189,30 @@ echo '</div><br><br>';	//subpagearticle______
 </body>
 	<footer>
 		<div id="ourfooter">
-			<div id="logogit">
-				<img src="gitlogo.png" alt="gitlogoomar" width="40px" height="40px" >
-				<div id="subfoot">
-					<a href="https://github.com/Omar-Diane">Omar</a>
-					<a href="https://github.com/Giacomo-DeGrandi">Giak</a>
+			<div>
+				<div id="logogit">
+					<img src="gitlogo.png" alt="gitlogoomar" width="40px" height="40px" >
+					<div id="subfoot">
+						<a href="https://github.com/Omar-Diane">Omar</a>
+						<a href="https://github.com/Giacomo-DeGrandi">Giak</a>
+					</div>
+				</div>
+			</div>
+			<div id="linksfoot">
+				<div id="btnfooters">
+<?php
+
+if(!isset($_COOKIE['user'])){
+	$sess=null;
+	echo rightFooter($sess);
+} else {
+	$user=new user($pdo);		// get my user
+	$id=$_COOKIE['connected'];
+	$row=$user->getRights($id);
+	echo rightFooter($row['nom']);
+}
+
+?>
 				</div>
 			</div>
 		</div>

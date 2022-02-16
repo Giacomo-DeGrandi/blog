@@ -246,7 +246,7 @@ if(isset($_COOKIE['connected'])){
 		$x=count($articles);
 		echo $article=articleLayout(viewArticles($articles,$x));
 		echo '<small><br><br><i>total num of articles written by you: '.$x.'</i><br><br></small>';
-		echo articlesPages($x);
+		echo articlesPages($x,$cat=null,$start=null);
 		$categories=new categories($pdo);
 		$categories=$categories->getAllCategories();
 		echo '<br></div><span><br></span>';
@@ -268,11 +268,30 @@ if(isset($_COOKIE['connected'])){
 </body>
 	<footer>
 		<div id="ourfooter">
-			<div id="logogit">
-				<img src="./gitlogo.png" alt="gitlogoomar" width="40px" height="40px" >
-				<div id="subfoot">
-					<a href="https://github.com/Omar-Diane">Omar</a>
-					<a href="https://github.com/Giacomo-DeGrandi">Giak</a>
+			<div>
+				<div id="logogit">
+					<img src="gitlogo.png" alt="gitlogoomar" width="40px" height="40px" >
+					<div id="subfoot">
+						<a href="https://github.com/Omar-Diane">Omar</a>
+						<a href="https://github.com/Giacomo-DeGrandi">Giak</a>
+					</div>
+				</div>
+			</div>
+			<div id="linksfoot">
+				<div id="btnfooters">
+<?php
+
+if(!isset($_COOKIE['user'])){
+	$sess=null;
+	echo rightFooter($sess);
+} else {
+	$user=new user($pdo);		// get my user
+	$id=$_COOKIE['connected'];
+	$row=$user->getRights($id);
+	echo rightFooter($row['nom']);
+}
+
+?>
 				</div>
 			</div>
 		</div>
