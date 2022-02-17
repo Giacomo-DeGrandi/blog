@@ -177,6 +177,7 @@ if($_POST){
 }
 
 
+
 ?>
 </header><br><br><br>
 <body>
@@ -187,6 +188,7 @@ if($_POST){
 echo '<div id="articlemain">';
 $article=new article($pdo);
 $id_article=$_GET['id'];
+var_dump($id_article);
 $article=$article->getOneArticle($id_article);
 echo viewOneArticle($article);
 if(isset($_COOKIE['connected'])){
