@@ -188,8 +188,8 @@ if($_POST){
 echo '<div id="articlemain">';
 $article=new article($pdo);
 $id_article=$_GET['id'];
-var_dump($id_article);
 $article=$article->getOneArticle($id_article);
+var_dump($article);
 echo viewOneArticle($article);
 if(isset($_COOKIE['connected'])){
 	$id_user=$_COOKIE['connected'];
