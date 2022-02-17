@@ -93,13 +93,14 @@ button {
 	font-family: var(--genfont);
 	font-size: 0.8em;
 	width: 100px;
-	padding: 1px;
+	padding: 2px;
 	border: none;
 	background-color: var(--lavender);
 	box-shadow: var(--solidshad);
 	color: var(--black);
 	background-color: white;
 }
+
 
 #linkfakebtn{
 	font-family: var(--genfont);
