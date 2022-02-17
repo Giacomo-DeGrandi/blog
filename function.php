@@ -206,13 +206,14 @@ function viewAllArticles($article,$n){
 	$tmp='';
 	$m=$n+4;
 	for($i=$n;$i<=$m;$i++){
+		if(isset($article[$i])){
 			$tmp .= '<tr><td><h2><div class="subart">'.textBeginning($article[$i]['article']).'...</h2>
 			<h4><form action="articles.php" method="get"><button type="submit" name="categories" value="'.$article[$i]['nom'].'">'.$article[$i]['nom'].'</button></form><br></h4><i>'.$article[$i]['date'].'</i>
 			<div class="authorname">'.textBeginning($article[$i]['article']).'</div>
 						<p>by:'.$article[$i]['login'].'</p><br>
 			<p>'.textBeginning2($article[$i]['article']).'...</p>
-			<small><form action="article.php" method="get"><button type="submit" name="id" value="'.$article[$i]['id'].'">continue to read</button></form></div></small><span id="changemeart"></span></td></tr>';
-
+			<small><form action="article.php" method="get"><button type="submit" name="id" value="'.$article[$i][2].'">continue to read</button></form></div></small><span id="changemeart"></span></td></tr>';
+		}
 	}
 	return $tmp;
 }

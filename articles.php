@@ -149,7 +149,6 @@ if($count>0){
 				$k=$_GET['start'];
 				$articles=viewAllArticles($articles,$k);
 				echo articlesPages($count,$cat,$k).'<br><span><br></span>';
-				var_dump($articles[$i]['id']);
 				break;
 			case isset($_GET['categories']) and isset($_GET['start']):
 				$k=$_GET['start'];
@@ -160,7 +159,7 @@ if($count>0){
 				break;
 			case isset($_GET['categories']):
 				if(isset($_GET['start'])){
-					$k=$_GET['start'];
+					$k=$_GET['start'];;
 				}
 				$k=0;
 				$cat=$_GET['categories'];	
