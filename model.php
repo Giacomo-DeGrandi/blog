@@ -230,6 +230,7 @@ class article {
 
 	public function getOneArticle($id){
 		$pdo=$this->pdo;
+		var_dump($id);
 		$prepared=$pdo->prepare( "SELECT articles.article, articles.date, articles.id, utilisateurs.login, categories.nom, utilisateurs.id
 									FROM articles
 									JOIN utilisateurs
