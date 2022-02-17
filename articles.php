@@ -165,6 +165,7 @@ if($count>0){
 				$cat=$_GET['categories'];	
 				$articles=$article->getArticlesByCat($cat);
 				$articles=viewAllArticles($articles,$k);
+					var_dump($articles[$i]['id']);
 				echo articlesPages($count,$cat,$k).'<br><span><br></span>';
 				break;
 		endswitch;

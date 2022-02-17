@@ -214,7 +214,6 @@ function viewAllArticles($article,$n){
 			<small><form action="article.php" method="get"><button type="submit" name="id" value="'.$article[$i]['id'].'">continue to read</button></form></div></small><span id="changemeart"></span></td></tr>';
 
 	}
-	var_dump($article[$i]['id']);
 	return $tmp;
 }
 
