@@ -211,6 +211,7 @@ h2:nth-child(3) {
   }
   80% {
     transform: none;
+    color: var(--webviolet);
     opacity: 1;
   }
   100% {
