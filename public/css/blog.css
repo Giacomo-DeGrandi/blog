@@ -238,6 +238,7 @@ h2:nth-child(3) {
     opacity: 0.25;
   }
   30% {
+  	 color: var(--webviolet);
     transform: translate(-5px, -2px);
     opacity: 0.5;
   }
@@ -246,6 +247,7 @@ h2:nth-child(3) {
     opacity: 0.25;
   }
   52% {
+  	color: var(--webviolet);
     transform: none;
     opacity: 0.25;
   }
@@ -277,6 +279,7 @@ h2:nth-child(3) {
 
 @keyframes glitch3 {
   0% {
+  	    color: var(--webviolet);
     transform: none;
     opacity: 0.25;
   }
@@ -313,6 +316,7 @@ h2:nth-child(3) {
     opacity: 0.25;
   }
   72% {
+  	    color: var(--medviored);
     transform: none;
     opacity: 0.25;
   }
