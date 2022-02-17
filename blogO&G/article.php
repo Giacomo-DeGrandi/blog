@@ -23,6 +23,7 @@ $pdo=$mydb->getConn();
 //__menu
 
 $categories=new categories($pdo);
+$catalias=$categories;
 $categories=$categories->getAllCategories();
 require_once 'menu.php';
 $forms=menuSubNav($categories);
@@ -80,8 +81,6 @@ if($_POST){
 					echo '<div class="fakemodaltext">';
 					if($form==1){
 						require_once 'creer-article.php';
-						$list=catList($categories,$create);
-						echo $list;
 					}
 					if(isset($_POST['close'])){
 						$form=0;
@@ -92,18 +91,22 @@ if($_POST){
 			exit();
 			break;
 		case isset($_POST['editarticle']):
+			echo '<style> #createbtn{pointer-events:none;} </style>';
 			$form=1;
 			$user=new user($pdo);
 			if(isset($_COOKIE['connected'])){
 				$id=$_COOKIE['connected'];
 				$row=$user->getRights($id);
+				$catx=new categories($pdo);
+				$catx=$catx->getAllCategories();
 				if($row['nom']==='administrateur'||$row['nom']==='moderateur'){ 
 					echo '<div class="fakemodaltext">';
 					if($form==1){
 						require_once 'creer-article.php';
 						$editart=$create;
-						$editart=str_replace('<span>insert data list here</span>',' ',$editart);
-						$editart=str_replace('<h2>write here your article:</h2>','<h2>edit article here</h2>',$editart);
+						$catlist=catListEdit($catx);
+						$editart=str_replace('<span>insert data list here</span>',$catlist,$editart);
+						$editart=str_replace('<h2>write here your article:</h2>','<h2>edit article </h2>',$editart);
 						$editart=str_replace('articletext','articleedit',$editart);
 						$editart=str_replace('sendarticle','sendeditart',$editart);
 						$editart=str_replace('write','edit',$editart);
@@ -143,11 +146,16 @@ if($_POST){
 				}
 			break;
 		case isset($_POST['sendeditart']):
-			if(testPost(isset($_POST['articleedit']))===true){
+			if(testPost(isset($_POST['articleedit']))===true&&
+				 isset($_POST['categorieslist'])){
 				$article=new article($pdo);
 				$id_article=$_GET['id'];
+				$catname=$_POST['categorieslist'];
+				$catsend=new categories($pdo);
+				$id_cat=$catsend->getCatByName($catname);
+				$id_cat=$id_cat['id'];
 				$edit=htmlspecialchars($_POST['articleedit']);
-				$article=$article->updateArticle($id_article,$edit);
+				$article=$article->updateArticle($id_article,$edit,$id_cat);
 			}
 			break;
 		case isset($_POST['deletearticle']):
@@ -211,6 +219,8 @@ $categories=new categories($pdo);
 $categories=$categories->getAllCategories();
 showCatNav($categories);
 echo '<br><br></div>';
+echo '<br><span><br></span><br>';
+
 
 
 ?>

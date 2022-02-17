@@ -31,7 +31,7 @@ function rightHeader($cookie){
 		case 'moderateur':
 		case 'administrateur':
 			$header='<form action="profil.php" method="post"><input type="submit" name="profil" value="profil"/></form>
-					 <form action="" method="post"><input type="submit" name="create" value="create"/></form>
+					 <form action="" method="post"><input type="submit" name="create" value="create" id="createbtn"/></form>
 					 <form action="index.php" method="post"><input type="submit" name="disconnect" value="log out"/></form></div>';
 			return $header;
 			break;
@@ -139,6 +139,14 @@ function catList($categories,$create){
 	$tmp = $tmp.'</select><br><br>';
 	$create=str_replace( "<span>insert data list here</span>", $tmp, $create);
 	return $create.'<form method="post"><input type="submit" name="close" value="close" id="modifybtn"></input></div></form>	<style> #write{ display:none;}.fakemodal{ opacity:1;} </style>';
+}
+function catListEdit($categories){
+	$tmp='<i><small>chose a category: &#160; </small></i><select id="categories" name="categorieslist">';
+	for($i=0;$i<=isset($categories[$i]);$i++){
+		$tmp .= '<option value="'.$categories[$i]['nom'].'">'.$categories[$i]['nom'].'</option>';
+	}
+	$tmp = $tmp.'</select><br><br>';
+	return $tmp;
 }
 
 

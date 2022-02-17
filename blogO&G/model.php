@@ -161,11 +161,11 @@ class user {
 	}
 	public function deleteUser($id){
 		$pdo=$this->pdo;
-		$prepared=$pdo->prepare(" DELETE utilisateurs,articles,commentaires
-								  FROM utilisateurs
-								  INNER JOIN articles ON utilisateurs.id = articles.id_utilisateur
-								  INNER JOIN commentaires ON utilisateurs.id = commentaires.id_utilisateur
-								  WHERE utilisateurs.id = :id ; ");
+		$prepared=$pdo->prepare(" DELETE utilisateurs, articles, commentaires
+								FROM utilisateurs 
+								LEFT JOIN articles ON utilisateurs.id = articles.id_utilisateur
+								LEFT JOIN commentaires ON utilisateurs.id = commentaires.id_utilisateur
+								WHERE utilisateurs.id = :id  ");
 		$prepared->execute([':id'=> $id ]);
 	}
 }
@@ -254,16 +254,18 @@ class article {
 		return $article;
 
 	}		
-	public function updateArticle($id_article,$edit){
+	public function updateArticle($id_article,$edit,$cat){
 		$pdo=$this->pdo;
-		$sql = " UPDATE articles SET  article=:article WHERE id=:id ";
+		$sql = " UPDATE articles SET  article = :article, id_categorie = :id_categorie WHERE id = :id ";
         $prepared2 = $pdo->prepare($sql);
-        $executed = $prepared2->execute([':id'=>$id_article,':article'=>$edit]);
+        $executed = $prepared2->execute([':id'=>$id_article,':article'=>$edit, ':id_categorie'=>$cat]);
 	}
 	public function deleteArticle($id){
 		$pdo=$this->pdo;
-		$prepared=$pdo->prepare(" DELETE FROM articles WHERE id = :id; 
-								  DELETE FROM commentaires WHERE id_article = :id ;");
+		$prepared=$pdo->prepare("DELETE articles, commentaires
+								FROM articles 
+								LEFT JOIN commentaires ON articles.id = commentaires.id_article
+								WHERE articles.id = :id  ");
 		$prepared->execute([':id'=> $id ]);
 	}							
 }
@@ -334,6 +336,20 @@ class categories {
 		$pdo=$this->pdo;
 		return $pdo;
 	}
+	function getCatById($id){
+		$pdo=$this->pdo;
+		$prepared=$pdo->prepare("SELECT nom FROM categories WHERE id = :id");
+		$prepared->execute([':id'=> $id ]); 
+		$categories = $prepared->fetch();
+		return $categories;		
+	}
+	function getCatByName($name){
+		$pdo=$this->pdo;
+		$prepared=$pdo->prepare("SELECT id FROM categories WHERE nom = :nom");
+		$prepared->execute([':nom'=> $name ]); 
+		$categories = $prepared->fetch();
+		return $categories;		
+	}	
 
 	function getAllCategories(){
 		$pdo=$this->pdo;

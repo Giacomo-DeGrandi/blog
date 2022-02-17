@@ -115,6 +115,26 @@ if($_POST){
 			$id_comm=$_POST['deletecomm'];
 			$comment=new comments($pdo);
 			$comment->deleteComment($id_comm);
+			break;
+
+			// update profile____________________
+		case testPost(isset($_POST['username']))&&
+				testPost(isset($_POST['password']))&&
+				isset($_POST['email'])&&
+				filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)&&
+				testPost(isset($_POST['passwordconf']))&&
+				testPost($_POST['password'])===testPost($_POST['passwordconf']):
+						$_POST['passwordconf']=htmlspecialchars($_POST['passwordconf']);
+						$id=$_COOKIE['connected'];
+						$login=htmlspecialchars($_POST['username']);
+						$password=htmlspecialchars($_POST['password']);
+						$email=htmlspecialchars($_POST['email']);
+						$row=$user->getRights($id);
+						$id_droits=$row['id_droits']; //int cause in bd int id
+						$user=$user->updateUser($login,$password,$email,$id_droits,$id);
+						header('location:profil.php');
+				exit();
+				break;
 	endswitch;
 }
 
@@ -151,36 +171,20 @@ if(isset($_COOKIE['connected'])){
 	}
 } // remember header location if !isset 
 
-// update profile____________________
 
-if( testPost(isset($_POST['username']))&&
-	testPost(isset($_POST['password']))&&
-	isset($_POST['email'])&&
-	filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)&&
-	testPost(isset($_POST['passwordconf']))&&
-	testPost($_POST['password'])===testPost($_POST['passwordconf'])
-	 ){
-			$_POST['passwordconf']=htmlspecialchars($_POST['passwordconf']);
-			$id=$_COOKIE['connected'];
-			$login=htmlspecialchars($_POST['username']);
-			$password=htmlspecialchars($_POST['password']);
-			$email=htmlspecialchars($_POST['email']);
-			$row=$user->getRights($id);
-			$id_droits=$row['id_droits']; //int cause in bd int id
-			$user=$user->updateUser($login,$password,$email,$id_droits,$id);
-			if(isset($_POST['send'])){
-				if($user===false){
-					echo '<span class="fakemodal">This user already exists.<br>Please, choose another username';
-					echo '<form action=""><button type="submit" name="close" class="miniclose">close</button></form></span>';
+if(isset($_POST['send'])){
+	if($user===false){
+		echo '<span class="fakemodal">This user already exists.<br>Please, choose another username';
+		echo '<form action=""><button type="submit" name="close" class="miniclose">close</button></form></span>';
 
-				} else {
-					$mod=1;
-					if($mod===1){
-						echo '<span class="fakemodal">you\'ve succesfully updated your informations';
-						echo '<form action=""><button type="submit" name="close" class="miniclose">close</button></form></span>';
-					}
-				}
-			}
+	} else {
+		$mod=1;
+		if($mod===1){
+			echo '<span class="fakemodal">you\'ve succesfully updated your informations';
+			echo '<form action=""><button type="submit" name="close" class="miniclose">close</button></form></span>';
+			
+		}
+	}
 }
 
 echo '</div><br>';
@@ -251,6 +255,8 @@ if(isset($_COOKIE['connected'])){
 		$categories=$categories->getAllCategories();
 		echo '<br></div><span><br></span>';
 		showCatNav($categories);
+		echo '<br><span><br></span><br>';
+
 	} else {
 		echo '<h2> there are no articles yet</h2>';
 		echo '</div>';

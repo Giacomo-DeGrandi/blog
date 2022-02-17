@@ -119,6 +119,9 @@ if($_POST){
 </header><br><br><br>
 <body>
 	<main id="articlesmainlayout">
+		<form action="articles.php" method="get">
+				<button type="submit" name="articles" value="articles"><b>ALL ARTICLES</b></button> 
+		</form><br>
 <?php
 
 
@@ -140,19 +143,19 @@ if($count>0){
 			case !isset($_GET['start']) and !isset($_GET['categories']):
 				$k=0;
 				$articles=viewAllArticles($articles,$k);
-				echo articlesPages($count,$cat,$k).'<br>';
+				echo articlesPages($count,$cat,$k).'<br><span><br></span>';
 				break;
 			case !isset($_GET['categories']) and isset($_GET['start']) :
 				$k=$_GET['start'];
 				$articles=viewAllArticles($articles,$k);
-				echo articlesPages($count,$cat,$k).'<br>';
+				echo articlesPages($count,$cat,$k).'<br><span><br></span>';
 				break;
 			case isset($_GET['categories']) and isset($_GET['start']):
 				$k=$_GET['start'];
 				$cat=$_GET['categories'];	
 				$articles=$article->getArticlesByCat($cat);
 				$articles=viewAllArticles($articles,$k);	
-				echo articlesPages($count,$cat,$k).'<br>';
+				echo articlesPages($count,$cat,$k).'<br><span><br></span>';
 				break;
 			case isset($_GET['categories']):
 				if(isset($_GET['start'])){
@@ -162,7 +165,7 @@ if($count>0){
 				$cat=$_GET['categories'];	
 				$articles=$article->getArticlesByCat($cat);
 				$articles=viewAllArticles($articles,$k);
-				echo articlesPages($count,$cat,$k).'<br>';
+				echo articlesPages($count,$cat,$k).'<br><span><br></span>';
 				break;
 		endswitch;
 	}
@@ -183,6 +186,8 @@ $categories=new categories($pdo);
 $categories=$categories->getAllCategories();
 showCatNav($categories);
 echo '</div><br><br>';	//subpagearticle______
+echo '<br><span><br></span><br>';
+
 
 ?>
 	</main>

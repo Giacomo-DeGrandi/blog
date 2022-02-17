@@ -104,6 +104,9 @@ if($_POST){
 </header><br><br><br>
 <body>
 	<main id="indexmain">
+		<form action="articles.php" method="get">
+				<button type="submit" name="articles" value="articles"><b>ALL ARTICLES</b></button> 
+		</form><br>
 <?php
 
 $article=new article($pdo);
@@ -118,7 +121,7 @@ echo articlesPages($count,$cat=null,$start=null);
 $categories=new categories($pdo); 
 $categories=$categories->getAllCategories();
 showCatNav($categories);
-echo '<br><br>';
+echo '<br><span><br></span><br>';
 
 ?>
 	</main>
