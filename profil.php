@@ -34,11 +34,13 @@ $user=new user($pdo);		// get my user
 if(!isset($_COOKIE['user'])){
 	$sess=null;
 	echo rightHeader($sess);
+	header('location:index.php');
 } else {
 	$id=$_COOKIE['connected'];
 	$row=$user->getRights($id);
 	echo rightHeader($row['nom']);
 }
+
 
 // routing POSTS________________________________________
 
