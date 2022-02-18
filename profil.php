@@ -138,9 +138,7 @@ if($_POST){
 								echo '<form action=""><button type="submit" name="close" class="miniclose">close</button></form></span>';
 								header( "refresh:2;url=profil.php" );
 							} else {
-								echo '<span class="fakemodaltext2">you\'ve succesfully updated your informations';
-								echo '<form action=""><button type="submit" name="close" class="miniclose">close</button></form></span>';
-								header( "refresh:2;url=profil.php" );
+								header( "location:profil.php" );
 							}
 						}
 				exit();
