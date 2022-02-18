@@ -40,7 +40,12 @@ if(!isset($_COOKIE['user'])){
 	$id=$_COOKIE['connected'];
 	$row=$user->getRights($id);
 	echo rightHeader($row['nom']);
+	if($row['nom']!=='administrateur'){
+		header('location:index.php');
+	}
+
 }
+
 
 // post router___________________________________
 if($_POST){
