@@ -88,6 +88,14 @@ input[type=submit]:hover{
 	box-shadow: var(--solidshadtails);
 	transition: 1s;
 }
+input[type=submit]:focus{
+	border-radius: 15px;
+	border: none;
+	color: white;
+	background-color: var(--medviored);
+	box-shadow: var(--solidshadtails);
+	transition: 1s;
+}
 
 button {
 	font-family: var(--genfont);
@@ -119,6 +127,14 @@ span{
 }
 
 button:hover{
+	border-radius: 15px;
+	border: none;
+	color: white;
+	background-color: var(--medviored);
+	box-shadow: var(--solidshadtails);
+	transition: 1s;
+}
+button:focus{
 	border-radius: 15px;
 	border: none;
 	color: white;

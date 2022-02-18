@@ -415,12 +415,5 @@ class rights {
         $prepared = $pdo->prepare($sql);
         $executed = $prepared->execute([':nom'=> $right_nom ]);	
 	}
-	function deleteCat($id_cat){
-		$pdo=$this->pdo;
-		//$prepared=$pdo->prepare("   DELETE FROM droits WHERE id=:id ;
-							//		UPDATE utilisateur SET  ");
-		//$prepared->execute([':id'=> $id_cat ]);			
-	}
-
 
 }

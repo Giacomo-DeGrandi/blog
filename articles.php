@@ -196,7 +196,7 @@ echo '<br><span><br></span><br>';
 		<div id="ourfooter">
 			<div>
 				<div id="logogit">
-					<img src="gitlogo.png" alt="gitlogoomar" width="40px" height="40px" >
+					<img src="gitlogo.png" alt="gitlogoomar" width="40" height="40" >
 					<div id="subfoot">
 						<a href="https://github.com/Omar-Diane">Omar</a>
 						<a href="https://github.com/Giacomo-DeGrandi">Giak</a>
