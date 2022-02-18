@@ -36,6 +36,9 @@ $user= new user($pdo);
 if(!isset($_COOKIE['user'])){
 	$sess=null;
 	echo rightHeader($sess);
+	if($row['nom']!=='administrateur'){
+		header('location:index.php');
+	}
 } else {
 	$id=$_COOKIE['connected'];
 	$row=$user->getRights($id);
