@@ -133,11 +133,11 @@ if($_POST){
 						$id_droits=$row['id_droits']; //int cause in bd int id
 						$userupdated=$user->updateUser($login,$password,$email,$id_droits,$id);
 						if($userupdated!==false){
-								echo '<span class="fakemodaltext2">succesfully updated!<br><form action=""><button type="submit" name="close" class="miniclose">close</button></form></span>';
-								header( "refresh:1;url=profil.php" );
+								echo '<span class="fakemodaltext">succesfully updated!<br><form action=""><button type="submit" name="close" class="miniclose">close</button></form></span>';
+								header( "refresh:2;url=profil.php" );
 						} else {
 							echo '<span class="fakemodaltext2">This username or email already exists.<br>Please, choose another username<form action=""><button type="submit" name="close" class="miniclose">close</button></form></span>';
-							header( "refresh:1;url=profil.php" );
+							header( "refresh:2;url=profil.php" );
 						}
 				exit();
 				break;
