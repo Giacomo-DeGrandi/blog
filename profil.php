@@ -131,8 +131,18 @@ if($_POST){
 						$email=htmlspecialchars($_POST['email']);
 						$row=$user->getRights($id);
 						$id_droits=$row['id_droits']; //int cause in bd int id
-						$user=$user->updateUser($login,$password,$email,$id_droits,$id);
-						header('location:profil.php');
+						$userupdated=$user->updateUser($login,$password,$email,$id_droits,$id);
+						if(isset($userupdated)){
+							if($userupdated===false){
+								echo '<span class="fakemodaltext2">This username or email already exists.<br>Please, choose another username';
+								echo '<form action=""><button type="submit" name="close" class="miniclose">close</button></form></span>';
+								header( "refresh:2;url=profil.php" );
+							} else {
+								echo '<span class="fakemodaltext2">you\'ve succesfully updated your informations';
+								echo '<form action=""><button type="submit" name="close" class="miniclose">close</button></form></span>';
+								header( "refresh:2;url=profil.php" );
+							}
+						}
 				exit();
 				break;
 	endswitch;
@@ -171,21 +181,6 @@ if(isset($_COOKIE['connected'])){
 	}
 } // remember header location if !isset 
 
-
-if(isset($_POST['send'])){
-	if($user===false){
-		echo '<span class="fakemodal">This user already exists.<br>Please, choose another username';
-		echo '<form action=""><button type="submit" name="close" class="miniclose">close</button></form></span>';
-
-	} else {
-		$mod=1;
-		if($mod===1){
-			echo '<span class="fakemodal">you\'ve succesfully updated your informations';
-			echo '<form action=""><button type="submit" name="close" class="miniclose">close</button></form></span>';
-			
-		}
-	}
-}
 
 echo '</div><br>';
 
