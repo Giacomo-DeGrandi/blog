@@ -129,7 +129,7 @@ if($_POST){
 			 isset($_POST['sendarticle']):
 				$categories=new categories($pdo);
 				$user=new user($pdo);
-				$articletext=htmlspecialchars($_POST['articletext'],ENT_COMPAT,UTF-8);
+				$articletext=htmlspecialchars($_POST['articletext'], ENT_NOQUOTES | ENT_HTML5 | ENT_SUBSTITUTE, 'UTF-8', /*double_encode*/false );
 				$id_utilisateur=$_COOKIE['connected'];
 				$id_categories=$_POST['categorieslist'];
 				$idcat=$categories->nomToNum($id_categories);
@@ -140,7 +140,7 @@ if($_POST){
 					$commentaire=new comments($pdo);
 					$id_article=$_GET['id'];
 					$id_user=$_COOKIE['connected'];
-					$comment=htmlspecialchars($_POST['comment'],ENT_COMPAT,UTF-8);
+					$comment=htmlspecialchars($_POST['comment'], ENT_NOQUOTES | ENT_HTML5 | ENT_SUBSTITUTE, 'UTF-8', /*double_encode*/false );
 					$date = date("Y-m-d H:i:s");
 					$commentaire->addCommentsFromArt($comment,$id_user,$id_article,$date);
 				}
@@ -154,7 +154,7 @@ if($_POST){
 				$catsend=new categories($pdo);
 				$id_cat=$catsend->getCatByName($catname);
 				$id_cat=$id_cat['id'];
-				$edit=htmlspecialchars($_POST['articleedit'],ENT_COMPAT,UTF-8);
+				$edit=htmlspecialchars($_POST['articleedit'], ENT_NOQUOTES | ENT_HTML5 | ENT_SUBSTITUTE, 'UTF-8', /*double_encode*/false );
 				$article=$article->updateArticle($id_article,$edit,$id_cat);
 			}
 			break;
