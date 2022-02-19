@@ -126,11 +126,11 @@ if($_POST){
 				filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)&&
 				testPost(isset($_POST['passwordconf']))&&
 				testPost($_POST['password'])===testPost($_POST['passwordconf']):
-						$_POST['passwordconf']=htmlspecialchars($_POST['passwordconf']);
+						$_POST['passwordconf']=htmlspecialchars($_POST['passwordconf'], ENT_NOQUOTES | ENT_HTML5 | ENT_SUBSTITUTE, 'UTF-8', /*double_encode*/false );
 						$id=$_COOKIE['connected'];
-						$login=htmlspecialchars($_POST['username']);
-						$password=htmlspecialchars($_POST['password']);
-						$email=htmlspecialchars($_POST['email']);
+						$login=htmlspecialchars($_POST['username'], ENT_NOQUOTES | ENT_HTML5 | ENT_SUBSTITUTE, 'UTF-8', /*double_encode*/false );
+						$password=htmlspecialchars($_POST['password'], ENT_NOQUOTES | ENT_HTML5 | ENT_SUBSTITUTE, 'UTF-8', /*double_encode*/false );
+						$email=htmlspecialchars($_POST['email'], ENT_NOQUOTES | ENT_HTML5 | ENT_SUBSTITUTE, 'UTF-8', /*double_encode*/false );
 						$row=$user->getRights($id);
 						$id_droits=$row['id_droits']; //int cause in bd int id
 						$userupdated=$user->updateUser($login,$password,$email,$id_droits,$id);
@@ -218,7 +218,7 @@ if( isset($_POST['articletext'])&&
 	isset($_POST['categorieslist'])&&
 	isset($_POST['sendarticle'])	){
 		$categories=new categories($pdo);
-		$articletext=htmlspecialchars($_POST['articletext']);
+		$articletext=htmlspecialchars($_POST['articletext'], ENT_NOQUOTES | ENT_HTML5 | ENT_SUBSTITUTE, 'UTF-8', /*double_encode*/false );
 		$id_utilisateur=$_COOKIE['connected'];
 		$id_categories=$_POST['categorieslist'];
 		$idcat=$categories->nomToNum($id_categories);

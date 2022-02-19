@@ -105,7 +105,7 @@ if($_POST){
 			 isset($_POST['sendarticle']):
 				$categories=new categories($pdo);
 				$user=new user($pdo);
-				$articletext=htmlspecialchars($_POST['articletext']);
+				$articletext=htmlspecialchars($_POST['articletext'], ENT_NOQUOTES | ENT_HTML5 | ENT_SUBSTITUTE, 'UTF-8', /*double_encode*/false );
 				$id_utilisateur=$_COOKIE['connected'];
 				$id_categories=$_POST['categorieslist'];
 				$idcat=$categories->nomToNum($id_categories);
