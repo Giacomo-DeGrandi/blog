@@ -98,9 +98,9 @@ if($_POST){
 					isset($_POST['email'])&&
 					filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)&&
 					testPost(isset($_POST['droits'])) ){
-							$login=htmlspecialchars($_POST['username']);
-							$droits=htmlspecialchars($_POST['droits']);
-							$email=htmlspecialchars($_POST['email']);
+							$login=htmlspecialchars($_POST['username'], ENT_NOQUOTES | ENT_HTML5 | ENT_SUBSTITUTE, 'UTF-8', /*double_encode*/false );
+							$droits=htmlspecialchars($_POST['droits'], ENT_NOQUOTES | ENT_HTML5 | ENT_SUBSTITUTE, 'UTF-8', /*double_encode*/false );
+							$email=htmlspecialchars($_POST['email'], ENT_NOQUOTES | ENT_HTML5 | ENT_SUBSTITUTE, 'UTF-8', /*double_encode*/false );
 							$id=$_POST['sendx'];
 							$userpw=$user->getAllInfo($id);
 							$password=$userpw['password'];
@@ -158,7 +158,7 @@ if($_POST){
 				if(isset($_POST['addcategoriesname'])){
 					if(testPost($_POST['addcategoriesname'])===true){
 						//$categories=new categories($pdo);
-						$post=htmlspecialchars($_POST['addcategoriesname']);
+						$post=htmlspecialchars($_POST['addcategoriesname'], ENT_NOQUOTES | ENT_HTML5 | ENT_SUBSTITUTE, 'UTF-8', /*double_encode*/false );
 						$catadd=$categories;
 						$catadd=$catadd->getCatByName($post);
 						if($catadd!=0){
@@ -177,7 +177,7 @@ if($_POST){
 				if(isset($_POST['categoriesname'])){
 					if(testPost($_POST['categoriesname'])===true){
 
-						$nom_edit=htmlspecialchars($_POST['categoriesname']);
+						$nom_edit=htmlspecialchars($_POST['categoriesname'], ENT_NOQUOTES | ENT_HTML5 | ENT_SUBSTITUTE, 'UTF-8', /*double_encode*/false );
 						$id_cat=$_POST['edit_cat_choice'];
 						$cattmp=$categories;
 						$cattmpname=$cattmp;
@@ -205,7 +205,7 @@ if( isset($_POST['articletext'])&&
 	isset($_POST['categorieslist'])&&
 	isset($_POST['sendarticle'])	){
 		//$categories=new categories($pdo);
-		$articletext=htmlspecialchars($_POST['articletext']);
+		$articletext=htmlspecialchars($_POST['articletext'], ENT_NOQUOTES | ENT_HTML5 | ENT_SUBSTITUTE, 'UTF-8', /*double_encode*/false );
 		$id_utilisateur=$_COOKIE['connected'];
 		$id_categories=$_POST['categorieslist'];
 		$idcat=$categories->nomToNum($id_categories);
