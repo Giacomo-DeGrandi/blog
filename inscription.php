@@ -80,11 +80,11 @@ if(isset($_COOKIE['form'])){
 
 $user=new user($pdo); 	// get my user class
 
-if( isset($_POST['username'])&& testPost($_POST['username'])&&
-	isset($_POST['password'])&& testPost($_POST['password']&&
+if( testPost(isset($_POST['username']))&&
+	testPost(isset($_POST['password']))&&
 	isset($_POST['email'])&&
 	filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)&&
-	isset($_POST['passwordconf'])&& testPost($_POST['passwordconf'])&&
+	testPost(isset($_POST['passwordconf']))&&
 	testPost($_POST['password'])===testPost($_POST['passwordconf'])&&
 	(isset($_POST['send'])) ){
 			$_POST['passwordconf']=htmlspecialchars($_POST['passwordconf']);
