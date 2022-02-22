@@ -9,7 +9,7 @@ function testPost ($post){
 	if(!empty($post)){
 		return true;
 	} else {
-		return '<span>please insert a valid input and fill in all the fields</span>';
+		return false;
 	}
 }
 
