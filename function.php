@@ -6,7 +6,7 @@ $_GET   = filter_input_array(INPUT_GET, FILTER_SANITIZE_STRING);
 $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
 function testPost ($post){
-	if(isset($post)&&!empty($post)&&filter_var($post, FILTER_SANITIZE_STRING)){
+	if(!empty($post)){
 		return true;
 	} else {
 		return '<span>please insert a valid input and fill in all the fields</span>';

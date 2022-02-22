@@ -95,7 +95,7 @@ if( testPost(isset($_POST['username']))&&
 			$id_droits=1; //int cause in bd int id
 			$user=$user->subscribeUser($login,$password_encrypted,$email,$id_droits);
 		if($user===false){
-			echo 'This user already exists.<br>Please, choose another username or log in <br> to get access to your account';
+			echo 'Please, fill in all the fields.<br> choose another username or log in <br> to get access to your account';
 		} else {
 			echo '<span class="fakemodaltext">Thanks! You\'re subscription is complete, you\'ll be redirected to the login page.</span>';
 			setcookie('form','login', time() +36000);
