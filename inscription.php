@@ -80,11 +80,11 @@ if(isset($_COOKIE['form'])){
 
 $user=new user($pdo); 	// get my user class
 
-if( testPost(isset($_POST['username']))&&
-	testPost(isset($_POST['password']))&&
+if( isset($_POST['username'])&& testPost($_POST['username'])&&
+	isset($_POST['password'])&& testPost($_POST['password'])&&
 	isset($_POST['email'])&&
 	filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)&&
-	testPost(isset($_POST['passwordconf']))&&
+	isset($_POST['passwordconf'])&& testPost($_POST['passwordconf'])&&
 	testPost($_POST['password'])===testPost($_POST['passwordconf'])&&
 	(isset($_POST['send'])) ){
 			$_POST['passwordconf']=htmlspecialchars($_POST['passwordconf']);
@@ -95,7 +95,7 @@ if( testPost(isset($_POST['username']))&&
 			$id_droits=1; //int cause in bd int id
 			$user=$user->subscribeUser($login,$password_encrypted,$email,$id_droits);
 		if($user===false){
-			echo 'Please, fill in all the fields.<br> choose another username or log in <br> to get access to your account';
+			echo 'This user already exists.<br>Please, choose another username or log in <br> to get access to your account';
 		} else {
 			echo '<span class="fakemodaltext">Thanks! You\'re subscription is complete, you\'ll be redirected to the login page.</span>';
 			setcookie('form','login', time() +36000);
