@@ -78,9 +78,11 @@ if($_POST){
 				$id=$_COOKIE['connected'];
 				$row=$user->getRights($id);
 				if($row['nom']==='administrateur'||$row['nom']==='moderateur'){ 
-					echo '<div class="fakemodaltext">';
+					echo '<div class="fakemodaltext2">';
 					if($form==1){
 						require_once 'creer-article.php';
+						$list=catList($categories,$create);
+						echo $list;
 					}
 					if(isset($_POST['close'])){
 						$form=0;
@@ -88,7 +90,6 @@ if($_POST){
 					}
 				}
 			}
-			exit();
 			break;
 		case isset($_POST['editarticle']):
 			echo '<style> #createbtn{pointer-events:none;} </style>';
@@ -123,8 +124,9 @@ if($_POST){
 				}
 			}
 			exit();
-			break;			
+			break;	
 		case isset($_POST['articletext'])&&
+			 testPost($_POST['articletext'])===true&&
 			 isset($_POST['categorieslist'])&&
 			 isset($_POST['sendarticle']):
 				$categories=new categories($pdo);

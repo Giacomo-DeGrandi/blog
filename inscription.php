@@ -80,26 +80,30 @@ if(isset($_COOKIE['form'])){
 
 $user=new user($pdo); 	// get my user class
 
-if( isset($_POST['username'])&& testPost($_POST['username'])&&
-	isset($_POST['password'])&& testPost($_POST['password'])&&
-	isset($_POST['email'])&&
-	filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)&&
-	isset($_POST['passwordconf'])&& testPost($_POST['passwordconf'])&&
-	testPost($_POST['password'])===testPost($_POST['passwordconf'])&&
-	(isset($_POST['send'])) ){
-			$_POST['passwordconf']=htmlspecialchars($_POST['passwordconf']);
-			$login=htmlspecialchars($_POST['username']);
-			$password=htmlspecialchars($_POST['password']);
-			$password_encrypted = password_hash($password, PASSWORD_BCRYPT);
-			$email=htmlspecialchars($_POST['email']);
-			$id_droits=1; //int cause in bd int id
-			$user=$user->subscribeUser($login,$password_encrypted,$email,$id_droits);
-		if($user===false){
-			echo 'This user already exists.<br>Please, choose another username or log in <br> to get access to your account';
+if( isset($_POST['username'])&&isset($_POST['password'])&&isset($_POST['email'])&&filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)&&
+	isset($_POST['passwordconf'])	){ 
+		if( testPost($_POST['username'])&&
+			testPost($_POST['password'])&&
+			testPost($_POST['passwordconf'])&&
+			testPost($_POST['password'])===testPost($_POST['passwordconf'])&&
+			isset($_POST['send']) ){
+					echo testPost($_POST['username']);
+					$_POST['passwordconf']=htmlspecialchars($_POST['passwordconf']);
+					$login=htmlspecialchars($_POST['username']);
+					$password=htmlspecialchars($_POST['password']);
+					$password_encrypted = password_hash($password, PASSWORD_BCRYPT);
+					$email=htmlspecialchars($_POST['email']);
+					$id_droits=1; //int cause in bd int id
+					$user=$user->subscribeUser($login,$password_encrypted,$email,$id_droits);
+				if($user===false){
+					echo 'This user already exists.<br>Please, choose another username or log in <br> to get access to your account';
+				} else {
+					echo '<span class="fakemodaltext">Thanks! You\'re subscription is complete, you\'ll be redirected to the login page.</span>';
+					setcookie('form','login', time() +36000);
+					header( "refresh:2;url=inscription.php" );
+				}
 		} else {
-			echo '<span class="fakemodaltext">Thanks! You\'re subscription is complete, you\'ll be redirected to the login page.</span>';
-			setcookie('form','login', time() +36000);
-			header( "refresh:2;url=inscription.php" );
+			echo '<span>please insert a valid input</span>';
 		}
 } else {
 	echo '<span>Please fill in all the fields</span>';
